@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Bundle\DoctrineExtensionsBundle\Tests\Validator\Constraints;
+namespace Sonatra\Component\DoctrineExtensions\Tests\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,8 +24,8 @@ use Symfony\Component\Validator\Tests\Fixtures\FakeMetadataFactory;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\DoubleNameEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity;
-use Sonatra\Bundle\DoctrineExtensionsBundle\Validator\Constraints\UniqueEntity;
-use Sonatra\Bundle\DoctrineExtensionsBundle\Validator\Constraints\UniqueEntityValidator;
+use Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity;
+use Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntityValidator;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
@@ -99,7 +99,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $validatorFactory = $this->getMockBuilder('Symfony\Component\Validator\ConstraintValidatorFactoryInterface')->getMock();
         $validatorFactory->expects($this->any())
             ->method('getInstance')
-            ->with($this->isInstanceOf('Sonatra\Bundle\DoctrineExtensionsBundle\Validator\Constraints\UniqueEntity'))
+            ->with($this->isInstanceOf('Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity'))
             ->will($this->returnValue($uniqueValidator));
 
         return $validatorFactory;
@@ -153,7 +153,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Bundle\DoctrineExtensionsBundle\Exception\UnexpectedTypeException
+     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException
      */
     public function testConstraintIsNotUniqueEntity()
     {
@@ -171,7 +171,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Bundle\DoctrineExtensionsBundle\Exception\UnexpectedTypeException
+     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException
      */
     public function testConstraintWrongFieldType()
     {
@@ -188,7 +188,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Bundle\DoctrineExtensionsBundle\Exception\UnexpectedTypeException
+     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException
      */
     public function testConstraintWrongErrorPath()
     {
@@ -205,7 +205,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Bundle\DoctrineExtensionsBundle\Exception\ConstraintDefinitionException
+     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
      */
     public function testConstraintHasNotField()
     {
@@ -223,7 +223,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Bundle\DoctrineExtensionsBundle\Exception\ConstraintDefinitionException
+     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
      */
     public function testConstraintHasNotExistingField()
     {
@@ -518,8 +518,8 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
-        $em->getConfiguration()->addFilter('fooFilter1', 'Sonatra\Bundle\DoctrineExtensionsBundle\Tests\Fixtures\FooFilter');
-        $em->getConfiguration()->addFilter('fooFilter2', 'Sonatra\Bundle\DoctrineExtensionsBundle\Tests\Fixtures\FooFilter');
+        $em->getConfiguration()->addFilter('fooFilter1', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
+        $em->getConfiguration()->addFilter('fooFilter2', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
         $em->getFilters()->enable('fooFilter1');
         $em->getFilters()->enable('fooFilter2');
         $this->createSchema($em);
@@ -538,8 +538,8 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
-        $em->getConfiguration()->addFilter('fooFilter1', 'Sonatra\Bundle\DoctrineExtensionsBundle\Tests\Fixtures\FooFilter');
-        $em->getConfiguration()->addFilter('fooFilter2', 'Sonatra\Bundle\DoctrineExtensionsBundle\Tests\Fixtures\FooFilter');
+        $em->getConfiguration()->addFilter('fooFilter1', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
+        $em->getConfiguration()->addFilter('fooFilter2', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
         $em->getFilters()->enable('fooFilter1');
         $em->getFilters()->enable('fooFilter2');
         $this->createSchema($em);

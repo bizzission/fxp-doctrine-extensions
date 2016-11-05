@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Bundle\DoctrineExtensionsBundle\Validator\Constraints;
+namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 

@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Bundle\DoctrineExtensionsBundle\Validator\Constraints;
+namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Sonatra\Bundle\DoctrineExtensionsBundle\Exception\UnexpectedTypeException;
-use Sonatra\Bundle\DoctrineExtensionsBundle\Exception\ConstraintDefinitionException;
+use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
+use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
 
 /**
  * Validator for Callback constraint with Doctrine Entity Manager.

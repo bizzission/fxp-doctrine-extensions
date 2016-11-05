@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Bundle\DoctrineExtensionsBundle\Tests\Fixtures;
+namespace Sonatra\Component\DoctrineExtensions\Tests\Fixtures;
 
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 

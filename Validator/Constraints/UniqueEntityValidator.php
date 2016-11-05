@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Bundle\DoctrineExtensionsBundle\Validator\Constraints;
+namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use Sonatra\Bundle\DoctrineExtensionsBundle\Util\SqlFilterUtil;
+use Sonatra\Component\DoctrineExtensions\Util\SqlFilterUtil;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Sonatra\Bundle\DoctrineExtensionsBundle\Exception\UnexpectedTypeException;
-use Sonatra\Bundle\DoctrineExtensionsBundle\Exception\ConstraintDefinitionException;
+use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
+use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**

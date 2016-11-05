@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Bundle\DoctrineExtensionsBundle\Exception;
+namespace Sonatra\Component\DoctrineExtensions\Exception;
 
 /**
  * Base ExceptionInterface for the doctrine extensions component.

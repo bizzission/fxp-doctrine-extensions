@@ -385,13 +385,13 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('findByCustom')
             ->will(
                 $this->returnCallback(function () use ($entity) {
-                        $returnValue = array(
+                    $returnValue = array(
                             $entity,
                         );
-                        next($returnValue);
+                    next($returnValue);
 
-                        return $returnValue;
-                    })
+                    return $returnValue;
+                })
             )
         ;
         $em = $this->createEntityManagerMock($repository);

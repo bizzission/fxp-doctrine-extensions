@@ -158,10 +158,10 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback(array(
             'callback' => function ($object, ExecutionContextInterface $context) {
-                    $context->addViolation('My message', array('{{ value }}' => 'foobar'), 'invalidValue');
+                $context->addViolation('My message', array('{{ value }}' => 'foobar'), 'invalidValue');
 
-                    return false;
-                },
+                return false;
+            },
         ));
 
         $this->context->expects($this->once())

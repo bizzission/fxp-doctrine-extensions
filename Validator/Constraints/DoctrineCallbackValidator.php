@@ -12,10 +12,10 @@
 namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
+use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
-use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
 
 /**
  * Validator for Callback constraint with Doctrine Entity Manager.

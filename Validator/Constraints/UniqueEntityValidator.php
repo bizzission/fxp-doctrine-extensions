@@ -14,11 +14,11 @@ namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
+use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
 use Sonatra\Component\DoctrineExtensions\Util\SqlFilterUtil;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
-use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**

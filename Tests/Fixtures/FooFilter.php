@@ -11,8 +11,8 @@
 
 namespace Sonatra\Component\DoctrineExtensions\Tests\Fixtures;
 
-use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Filter\SQLFilter;
 
 /**
  * Fixture filter.

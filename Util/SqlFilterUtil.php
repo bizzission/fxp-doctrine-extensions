@@ -101,7 +101,7 @@ class SqlFilterUtil
             foreach ($filters as $name) {
                 if ($sqlFilters->isEnabled($name)
                         && ($filter = $sqlFilters->getFilter($name)) instanceof EnableFilterInterface) {
-                    $filter->$action($name);
+                    $filter->$action();
                 } else {
                     $sqlFilters->$action($name);
                 }

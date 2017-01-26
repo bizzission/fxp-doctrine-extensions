@@ -525,18 +525,20 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $em = DoctrineTestHelper::createTestEntityManager();
         $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
         $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
+        $em->getConfiguration()->addFilter('barFilter1', BarFilter::class);
         $em->getFilters()->enable('fooFilter1');
         $em->getFilters()->enable('fooFilter2');
+        $em->getFilters()->enable('barFilter1');
         $this->createSchema($em);
         $validator = $this->createValidator($entityManagerName, $em);
         $entity1 = new SingleIntIdEntity(1, 'Foo');
 
-        $this->assertCount(2, $em->getFilters()->getEnabledFilters());
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
 
         $violationsList = $validator->validate($entity1);
 
         $this->assertEquals(0, $violationsList->count());
-        $this->assertCount(2, $em->getFilters()->getEnabledFilters());
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
     }
 
     public function testDisableOneFilterAndReactivateAfter()
@@ -545,17 +547,19 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $em = DoctrineTestHelper::createTestEntityManager();
         $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
         $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
+        $em->getConfiguration()->addFilter('barFilter1', BarFilter::class);
         $em->getFilters()->enable('fooFilter1');
         $em->getFilters()->enable('fooFilter2');
+        $em->getFilters()->enable('barFilter1');
         $this->createSchema($em);
         $validator = $this->createValidator($entityManagerName, $em, null, null, null, 'findBy', true, array('fooFilter1'), false);
         $entity1 = new SingleIntIdEntity(1, 'Foo');
 
-        $this->assertCount(2, $em->getFilters()->getEnabledFilters());
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
 
         $violationsList = $validator->validate($entity1);
 
         $this->assertEquals(0, $violationsList->count());
-        $this->assertCount(2, $em->getFilters()->getEnabledFilters());
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
     }
 }

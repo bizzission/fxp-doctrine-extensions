@@ -12,8 +12,13 @@
 namespace Sonatra\Component\DoctrineExtensions\Tests\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\Common\Reflection\StaticReflectionProperty;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
+use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter;
 use Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity;
 use Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntityValidator;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
@@ -39,7 +44,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
 {
     protected function createRegistryMock($entityManagerName, $em)
     {
-        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
         $registry->expects($this->any())
             ->method('getManager')
             ->with($this->equalTo($entityManagerName))
@@ -50,7 +55,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
 
     protected function createRepositoryMock()
     {
-        $repository = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectRepository')
+        $repository = $this->getMockBuilder(ObjectRepository::class)
             ->setMethods(array('findByCustom', 'find', 'findAll', 'findOneBy', 'findBy', 'getClassName'))
             ->getMock()
         ;
@@ -60,7 +65,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
 
     protected function createEntityManagerMock($repositoryMock)
     {
-        $em = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectManager')
+        $em = $this->getMockBuilder(ObjectManager::class)
             ->getMock()
         ;
         $em->expects($this->any())
@@ -68,13 +73,13 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($repositoryMock))
         ;
 
-        $classMetadata = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\ClassMetadata')->getMock();
+        $classMetadata = $this->getMockBuilder(\Doctrine\Common\Persistence\Mapping\ClassMetadata::class)->getMock();
         $classMetadata
             ->expects($this->any())
             ->method('hasField')
             ->will($this->returnValue(true))
         ;
-        $refl = $this->getMockBuilder('Doctrine\Common\Reflection\StaticReflectionProperty')
+        $refl = $this->getMockBuilder(StaticReflectionProperty::class)
             ->disableOriginalConstructor()
             ->setMethods(array('getValue'))
             ->getMock()
@@ -96,10 +101,10 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
 
     protected function createValidatorFactory($uniqueValidator)
     {
-        $validatorFactory = $this->getMockBuilder('Symfony\Component\Validator\ConstraintValidatorFactoryInterface')->getMock();
+        $validatorFactory = $this->getMockBuilder(ConstraintValidatorFactoryInterface::class)->getMock();
         $validatorFactory->expects($this->any())
             ->method('getInstance')
-            ->with($this->isInstanceOf('Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity'))
+            ->with($this->isInstanceOf(UniqueEntity::class))
             ->will($this->returnValue($uniqueValidator));
 
         return $validatorFactory;
@@ -108,7 +113,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     protected function createValidator($entityManagerName, $em, $validateClass = null, $uniqueFields = null, $errorPath = null, $repositoryMethod = 'findBy', $ignoreNull = true, array $filters = array(), $all = true)
     {
         if (!$validateClass) {
-            $validateClass = 'Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity';
+            $validateClass = SingleIntIdEntity::class;
         }
         if (!$uniqueFields) {
             $uniqueFields = array('name');
@@ -145,10 +150,10 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         /* @var EntityManagerInterface $em */
         $schemaTool = new SchemaTool($em);
         $schemaTool->createSchema(array(
-                $em->getClassMetadata('Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity'),
-                $em->getClassMetadata('Symfony\Bridge\Doctrine\Tests\Fixtures\DoubleNameEntity'),
-                $em->getClassMetadata('Symfony\Bridge\Doctrine\Tests\Fixtures\CompositeIntIdEntity'),
-                $em->getClassMetadata('Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity'),
+                $em->getClassMetadata(SingleIntIdEntity::class),
+                $em->getClassMetadata(DoubleNameEntity::class),
+                $em->getClassMetadata(CompositeIntIdEntity::class),
+                $em->getClassMetadata(AssociationEntity::class),
             ));
     }
 
@@ -164,7 +169,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $em = DoctrineTestHelper::createTestEntityManager();
         $registry = $this->createRegistryMock($entityManagerName, $em);
         $validator = new UniqueEntityValidator($registry);
-        $constraint = $this->getMockForAbstractClass('Symfony\Component\Validator\Constraint');
+        $constraint = $this->getMockForAbstractClass(Constraint::class);
         $entity = new SingleIntIdEntity(1, 'Foo');
 
         $validator->validate($entity, $constraint);
@@ -310,7 +315,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     public function testValidateUniquenessWithIgnoreNull()
     {
         $entityManagerName = 'foo';
-        $validateClass = 'Symfony\Bridge\Doctrine\Tests\Fixtures\DoubleNameEntity';
+        $validateClass = DoubleNameEntity::class;
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
         $validator = $this->createValidator($entityManagerName, $em, $validateClass, array('name', 'name2'), 'bar', 'findby', false);
@@ -406,7 +411,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, 'Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity', array('single'));
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, array('single'));
 
         $entity1 = new SingleIntIdEntity(1, 'foo');
         $associated = new AssociationEntity();
@@ -434,7 +439,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, 'Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity', array('single'), null, 'findBy', false);
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, array('single'), null, 'findBy', false);
 
         $associated = new AssociationEntity();
         $associated->single = null;
@@ -455,7 +460,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, 'Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity', array('composite'));
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, array('composite'));
 
         $composite = new CompositeIntIdEntity(1, 1, 'test');
         $associated = new AssociationEntity();
@@ -478,7 +483,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $entityManagerName = 'foo';
 
         /* @var ManagerRegistry $registry */
-        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
 
         $constraint = new UniqueEntity(array(
             'fields' => $uniqueFields,
@@ -501,7 +506,7 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
         $uniqueFields = array('name');
 
         /* @var ManagerRegistry $registry */
-        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
 
         $constraint = new UniqueEntity(array(
             'fields' => $uniqueFields,
@@ -518,8 +523,8 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
-        $em->getConfiguration()->addFilter('fooFilter1', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
-        $em->getConfiguration()->addFilter('fooFilter2', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
+        $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
+        $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
         $em->getFilters()->enable('fooFilter1');
         $em->getFilters()->enable('fooFilter2');
         $this->createSchema($em);
@@ -538,8 +543,8 @@ class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
-        $em->getConfiguration()->addFilter('fooFilter1', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
-        $em->getConfiguration()->addFilter('fooFilter2', 'Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter');
+        $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
+        $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
         $em->getFilters()->enable('fooFilter1');
         $em->getFilters()->enable('fooFilter2');
         $this->createSchema($em);

@@ -12,6 +12,7 @@
 namespace Sonatra\Component\DoctrineExtensions\Tests\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass;
 use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorObject;
 use Sonatra\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallback;
 use Sonatra\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallbackValidator;
@@ -42,7 +43,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
         $em = DoctrineTestHelper::createTestEntityManager();
         /* @var ManagerRegistry $registry */
         $registry = $this->createRegistryMock($entityManagerName, $em);
-        $context = $this->getMockBuilder('Symfony\Component\Validator\Context\ExecutionContextInterface')
+        $context = $this->getMockBuilder(ExecutionContextInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->context = $context;
@@ -59,7 +60,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
 
     protected function createRegistryMock($entityManagerName, $em)
     {
-        $registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')->getMock();
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
         $registry->expects($this->any())
             ->method('getManager')
             ->with($this->equalTo($entityManagerName))
@@ -176,7 +177,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
     public function testArrayCallable()
     {
         $object = new FooCallbackValidatorObject();
-        $constraint = new DoctrineCallback(array('Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass', 'validateCallback'));
+        $constraint = new DoctrineCallback(array(FooCallbackValidatorClass::class, 'validateCallback'));
 
         $this->context->expects($this->once())
             ->method('addViolation')
@@ -189,7 +190,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testArrayCallableNullObject()
     {
-        $constraint = new DoctrineCallback(array('Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass', 'validateCallback'));
+        $constraint = new DoctrineCallback(array(FooCallbackValidatorClass::class, 'validateCallback'));
 
         $this->context->expects($this->once())
             ->method('addViolation')
@@ -204,7 +205,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback(array(
-            'callback' => array('Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass', 'validateCallback'),
+            'callback' => array(FooCallbackValidatorClass::class, 'validateCallback'),
         ));
 
         $this->context->expects($this->once())
@@ -223,7 +224,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $object = new FooCallbackValidatorObject();
         /* @var Constraint $constraint */
-        $constraint = $this->getMockForAbstractClass('Symfony\Component\Validator\Constraint');
+        $constraint = $this->getMockForAbstractClass(Constraint::class);
 
         $this->validator->validate($object, $constraint);
     }
@@ -270,8 +271,8 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testAnnotationInvocationMultiValued()
     {
-        $constraint = new DoctrineCallback(array('value' => array('Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass', 'validateCallback')));
+        $constraint = new DoctrineCallback(array('value' => array(FooCallbackValidatorClass::class, 'validateCallback')));
 
-        $this->assertEquals(new DoctrineCallback(array('Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass', 'validateCallback')), $constraint);
+        $this->assertEquals(new DoctrineCallback(array(FooCallbackValidatorClass::class, 'validateCallback')), $constraint);
     }
 }

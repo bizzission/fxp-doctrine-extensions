@@ -12,7 +12,7 @@
 namespace Sonatra\Component\DoctrineExtensions\Util;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 use Sonatra\Component\DoctrineExtensions\Filter\EnableFilterInterface;
 
@@ -32,14 +32,39 @@ class SqlFilterUtil
      */
     public static function findFilters(ObjectManager $om, array $filters, $all = false)
     {
-        if (!$om instanceof EntityManager || (empty($filters) && !$all)) {
+        if (!$om instanceof EntityManagerInterface || (empty($filters) && !$all)) {
             return array();
         }
 
         $all = ($all && !empty($filters)) ? false : $all;
-        $enabledFilters = $om->getFilters()->getEnabledFilters();
+        $enabledFilters = self::getEnabledFilters($om);
 
         return self::doFindFilters($filters, $enabledFilters, $all);
+    }
+
+    /**
+     * Get the enabled sql filters.
+     *
+     * @param ObjectManager $om The ObjectManager instance
+     *
+     * @return SQLFilter[]
+     */
+    public static function getEnabledFilters(ObjectManager $om)
+    {
+        $filters = array();
+
+        if ($om instanceof EntityManagerInterface) {
+            $enabledFilters = $om->getFilters()->getEnabledFilters();
+
+            foreach ($enabledFilters as $name => $filter) {
+                if (!$filter instanceof EnableFilterInterface
+                        || ($filter instanceof EnableFilterInterface && $filter->isEnabled())) {
+                    $filters[$name] = $filter;
+                }
+            }
+        }
+
+        return $filters;
     }
 
     /**
@@ -95,7 +120,7 @@ class SqlFilterUtil
      */
     protected static function actionFilters(ObjectManager $om, $action, array $filters)
     {
-        if ($om instanceof EntityManager) {
+        if ($om instanceof EntityManagerInterface) {
             $sqlFilters = $om->getFilters();
 
             foreach ($filters as $name) {

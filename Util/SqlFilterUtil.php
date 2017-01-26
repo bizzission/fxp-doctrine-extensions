@@ -14,6 +14,7 @@ namespace Sonatra\Component\DoctrineExtensions\Util;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Filter\SQLFilter;
+use Sonatra\Component\DoctrineExtensions\Filter\EnableFilterInterface;
 
 /**
  * @author François Pluchino <francois.pluchino@sonatra.com>
@@ -95,8 +96,15 @@ class SqlFilterUtil
     protected static function actionFilters(ObjectManager $om, $action, array $filters)
     {
         if ($om instanceof EntityManager) {
+            $sqlFilters = $om->getFilters();
+
             foreach ($filters as $name) {
-                $om->getFilters()->$action($name);
+                if ($sqlFilters->isEnabled($name)
+                        && ($filter = $sqlFilters->getFilter($name)) instanceof EnableFilterInterface) {
+                    $filter->$action($name);
+                } else {
+                    $sqlFilters->$action($name);
+                }
             }
         }
     }

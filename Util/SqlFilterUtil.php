@@ -13,6 +13,7 @@ namespace Sonatra\Component\DoctrineExtensions\Util;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Filter\SQLFilter;
 
 /**
  * @author François Pluchino <francois.pluchino@sonatra.com>
@@ -23,10 +24,10 @@ class SqlFilterUtil
      * Get the list of SQL Filter name must to be disabled.
      *
      * @param ObjectManager $om      The ObjectManager instance
-     * @param array         $filters The list of SQL Filter
+     * @param string[]      $filters The list of SQL Filter
      * @param bool          $all     Force all SQL Filter
      *
-     * @return array
+     * @return string[]
      */
     public static function findFilters(ObjectManager $om, array $filters, $all = false)
     {
@@ -44,7 +45,7 @@ class SqlFilterUtil
      * Enable the SQL Filters.
      *
      * @param ObjectManager $om      The ObjectManager instance
-     * @param array         $filters The list of SQL Filter
+     * @param string[]      $filters The list of SQL Filter
      */
     public static function enableFilters(ObjectManager $om, array $filters)
     {
@@ -55,7 +56,7 @@ class SqlFilterUtil
      * Disable the SQL Filters.
      *
      * @param ObjectManager $om      The ObjectManager instance
-     * @param array         $filters The list of SQL Filter
+     * @param string[]      $filters The list of SQL Filter
      */
     public static function disableFilters(ObjectManager $om, array $filters)
     {
@@ -65,9 +66,9 @@ class SqlFilterUtil
     /**
      * Do find filters.
      *
-     * @param array $filters
-     * @param array $enabledFilters
-     * @param bool  $all
+     * @param string[]    $filters        The filters names to be found
+     * @param SQLFilter[] $enabledFilters The enabled SQL Filters
+     * @param bool        $all            Force all SQL Filter
      *
      * @return array
      */
@@ -88,8 +89,8 @@ class SqlFilterUtil
      * Disable/Enable the SQL Filters.
      *
      * @param ObjectManager $om      The ObjectManager instance
-     * @param string        $action  Value : disable|enable
-     * @param array         $filters The list of SQL Filter
+     * @param string        $action  The value (disable|enable)
+     * @param string[]      $filters The list of SQL Filter
      */
     protected static function actionFilters(ObjectManager $om, $action, array $filters)
     {

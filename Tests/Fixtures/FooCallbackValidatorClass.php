@@ -30,7 +30,7 @@ class FooCallbackValidatorClass
      */
     public static function validateCallback($object, ExecutionContextInterface $context)
     {
-        $context->addViolation('Callback message', array('{{ value }}' => 'foobar'), 'invalidValue');
+        $context->addViolation('Callback message', array('{{ value }}' => 'foobar'));
 
         return false;
     }

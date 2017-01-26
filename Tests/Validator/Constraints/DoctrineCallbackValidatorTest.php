@@ -122,7 +122,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback(function ($object, ExecutionContextInterface $context) {
-            $context->addViolation('My message', array('{{ value }}' => 'foobar'), 'invalidValue');
+            $context->addViolation('My message', array('{{ value }}' => 'foobar'));
 
             return false;
         });
@@ -139,7 +139,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
     public function testClosureNullObject()
     {
         $constraint = new DoctrineCallback(function ($object, ExecutionContextInterface $context) {
-            $context->addViolation('My message', array('{{ value }}' => 'foobar'), 'invalidValue');
+            $context->addViolation('My message', array('{{ value }}' => 'foobar'));
 
             return false;
         });
@@ -158,7 +158,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback(array(
             'callback' => function ($object, ExecutionContextInterface $context) {
-                $context->addViolation('My message', array('{{ value }}' => 'foobar'), 'invalidValue');
+                $context->addViolation('My message', array('{{ value }}' => 'foobar'));
 
                 return false;
             },

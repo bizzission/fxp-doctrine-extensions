@@ -25,9 +25,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class AbstractFilterSubscriberTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @group fxp
-     */
     public function testInjectParameters()
     {
         /* @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */

@@ -62,4 +62,47 @@ class SqlFilterUtilTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, SqlFilterUtil::getEnabledFilters($this->em));
     }
+
+    public function testIsEnabledWithDisabledSqlFilter()
+    {
+        $this->filterCollection->expects($this->once())
+            ->method('isEnabled')
+            ->with('foo')
+            ->willReturn(false);
+
+        $this->assertFalse(SqlFilterUtil::isEnabled($this->em, 'foo'));
+    }
+
+    public function testIsEnabledWithDisabledEnableSqlFilter()
+    {
+        $barFilter = new BarFilter($this->em);
+        $barFilter->disable();
+
+        $this->filterCollection->expects($this->once())
+            ->method('isEnabled')
+            ->with('bar')
+            ->willReturn(true);
+
+        $this->filterCollection->expects($this->once())
+            ->method('getFilter')
+            ->willReturn($barFilter);
+
+        $this->assertFalse(SqlFilterUtil::isEnabled($this->em, 'bar'));
+    }
+
+    public function testIsEnabledWithEnabledEnableSqlFilter()
+    {
+        $barFilter = new BarFilter($this->em);
+
+        $this->filterCollection->expects($this->once())
+            ->method('isEnabled')
+            ->with('bar')
+            ->willReturn(true);
+
+        $this->filterCollection->expects($this->once())
+            ->method('getFilter')
+            ->willReturn($barFilter);
+
+        $this->assertTrue(SqlFilterUtil::isEnabled($this->em, 'bar'));
+    }
 }

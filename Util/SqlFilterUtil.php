@@ -90,6 +90,30 @@ class SqlFilterUtil
     }
 
     /**
+     * Check if the filter is enabled.
+     *
+     * @param ObjectManager $om   The ObjectManager instance
+     * @param string        $name The filter name
+     *
+     * @return bool
+     */
+    public static function isEnabled(ObjectManager $om, $name)
+    {
+        if ($om instanceof EntityManagerInterface) {
+            $sqlFilters = $om->getFilters();
+
+            if ($sqlFilters->isEnabled($name)) {
+                $filter = $sqlFilters->getFilter($name);
+
+                return !$filter instanceof EnableFilterInterface
+                    || ($filter instanceof EnableFilterInterface && $filter->isEnabled());
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Do find filters.
      *
      * @param string[]    $filters        The filters names to be found

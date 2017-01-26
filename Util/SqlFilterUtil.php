@@ -24,13 +24,13 @@ class SqlFilterUtil
     /**
      * Get the list of SQL Filter name must to be disabled.
      *
-     * @param ObjectManager $om      The ObjectManager instance
-     * @param string[]      $filters The list of SQL Filter
-     * @param bool          $all     Force all SQL Filter
+     * @param ObjectManager|null $om      The object manager instance
+     * @param string[]           $filters The list of SQL Filter
+     * @param bool               $all     Force all SQL Filter
      *
      * @return string[]
      */
-    public static function findFilters(ObjectManager $om, array $filters, $all = false)
+    public static function findFilters($om, array $filters, $all = false)
     {
         if (!$om instanceof EntityManagerInterface || (empty($filters) && !$all)) {
             return array();
@@ -45,11 +45,11 @@ class SqlFilterUtil
     /**
      * Get the enabled sql filters.
      *
-     * @param ObjectManager $om The ObjectManager instance
+     * @param ObjectManager|null $om The object manager instance
      *
      * @return SQLFilter[]
      */
-    public static function getEnabledFilters(ObjectManager $om)
+    public static function getEnabledFilters($om)
     {
         $filters = array();
 
@@ -70,10 +70,10 @@ class SqlFilterUtil
     /**
      * Enable the SQL Filters.
      *
-     * @param ObjectManager $om      The ObjectManager instance
-     * @param string[]      $filters The list of SQL Filter
+     * @param ObjectManager|null $om      The object manager instance
+     * @param string[]           $filters The list of SQL Filter
      */
-    public static function enableFilters(ObjectManager $om, array $filters)
+    public static function enableFilters($om, array $filters)
     {
         static::actionFilters($om, 'enable', $filters);
     }
@@ -81,10 +81,10 @@ class SqlFilterUtil
     /**
      * Disable the SQL Filters.
      *
-     * @param ObjectManager $om      The ObjectManager instance
-     * @param string[]      $filters The list of SQL Filter
+     * @param ObjectManager|null $om      The object manager instance
+     * @param string[]           $filters The list of SQL Filter
      */
-    public static function disableFilters(ObjectManager $om, array $filters)
+    public static function disableFilters($om, array $filters)
     {
         static::actionFilters($om, 'disable', $filters);
     }
@@ -92,12 +92,12 @@ class SqlFilterUtil
     /**
      * Check if the filter is enabled.
      *
-     * @param ObjectManager $om   The ObjectManager instance
-     * @param string        $name The filter name
+     * @param ObjectManager|null $om   The object manager instance
+     * @param string             $name The filter name
      *
      * @return bool
      */
-    public static function isEnabled(ObjectManager $om, $name)
+    public static function isEnabled($om, $name)
     {
         if ($om instanceof EntityManagerInterface) {
             $sqlFilters = $om->getFilters();
@@ -138,11 +138,11 @@ class SqlFilterUtil
     /**
      * Disable/Enable the SQL Filters.
      *
-     * @param ObjectManager $om      The ObjectManager instance
-     * @param string        $action  The value (disable|enable)
-     * @param string[]      $filters The list of SQL Filter
+     * @param ObjectManager|null $om      The object manager instance
+     * @param string             $action  The value (disable|enable)
+     * @param string[]           $filters The list of SQL Filter
      */
-    protected static function actionFilters(ObjectManager $om, $action, array $filters)
+    protected static function actionFilters($om, $action, array $filters)
     {
         if ($om instanceof EntityManagerInterface) {
             $sqlFilters = $om->getFilters();

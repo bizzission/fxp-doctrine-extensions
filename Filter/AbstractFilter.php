@@ -106,6 +106,18 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
     }
 
     /**
+     * Get the class metadata.
+     *
+     * @param string $classname The class name
+     *
+     * @return ClassMetadata
+     */
+    protected function getClassMetadata($classname)
+    {
+        return $this->getEntityManager()->getClassMetadata($classname);
+    }
+
+    /**
      * Gets a parameter to use in a query without the output escaping.
      *
      * @param string $name The name of the parameter

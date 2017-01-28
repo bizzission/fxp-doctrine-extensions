@@ -49,6 +49,16 @@ class AbstractFilterTest extends \PHPUnit_Framework_TestCase
         /* @var Connection|\PHPUnit_Framework_MockObject_MockObject $connection */
         $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
 
+        $meta->expects($this->any())
+            ->method('getName')
+            ->willReturn(\stdClass::class);
+
+        $meta->expects($this->any())
+            ->method('getColumnName')
+            ->willReturnCallback(function ($v) {
+                return $v;
+            });
+
         $em->expects($this->any())
             ->method('getFilters')
             ->willReturn(new FilterCollection($em));
@@ -56,6 +66,14 @@ class AbstractFilterTest extends \PHPUnit_Framework_TestCase
         $em->expects($this->any())
             ->method('getConnection')
             ->willReturn($connection);
+
+        $em->expects($this->any())
+            ->method('getClassMetadata')
+            ->willReturnCallback(function ($v) use ($meta) {
+                return $v === $meta->getName()
+                    ? $meta
+                    : null;
+            });
 
         $connection->expects($this->any())
             ->method('quote')

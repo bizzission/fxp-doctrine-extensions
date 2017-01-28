@@ -30,7 +30,8 @@ class BarFilter extends AbstractFilter
 
         if ($this->hasParameter('foo_boolean') && $this->getRealParameter('foo_boolean')) {
             $connection = $this->getEntityManager()->getConnection();
-            $filter .= $targetTableAlias.'.foo = '.$connection->quote('bar');
+            $col = $this->getClassMetadata($targetEntity->getName())->getColumnName('foo');
+            $filter .= $targetTableAlias.'.'.$col.' = '.$connection->quote('bar');
         }
 
         return $filter;

@@ -70,7 +70,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
-        if ($this->isEnabled()) {
+        if ($this->isEnabled() && $this->supports($targetEntity)) {
             return $this->doAddFilterConstraint($targetEntity, $targetTableAlias);
         }
 
@@ -88,6 +88,18 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
      * @return string
      */
     abstract protected function doAddFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias);
+
+    /**
+     * Check if the target entity is supported by the sql filter.
+     *
+     * @param ClassMetadata $targetEntity class metadata of target entity
+     *
+     * @return bool
+     */
+    protected function supports(ClassMetadata $targetEntity)
+    {
+        return true;
+    }
 
     /**
      * Get the entity manager.

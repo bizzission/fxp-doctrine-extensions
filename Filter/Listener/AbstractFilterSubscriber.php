@@ -65,25 +65,31 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
     public function onEvent(Event $event)
     {
         if (!$event instanceof GetResponseEvent || !$this->injected) {
-            $this->findSqlFilter();
+            if (null !== ($filter = $this->getFilter())) {
+                $this->injectParameters($filter);
+            }
         }
     }
 
     /**
-     * Find the supported doctrine sql filter and injects the parameters.
+     * Get the supported filter.
+     *
+     * @return SQLFilter|null
      */
-    protected function findSqlFilter()
+    protected function getFilter()
     {
-        $this->injected = true;
         $supports = $this->supports();
         $filters = $this->entityManager->getFilters()->getEnabledFilters();
+        $fFilter = null;
 
         foreach ($filters as $name => $filter) {
             if ($filter instanceof $supports) {
-                $this->injectParameters($filter, $name);
+                $fFilter = $filter;
                 break;
             }
         }
+
+        return $fFilter;
     }
 
     /**
@@ -97,7 +103,6 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
      * Inject the parameters in doctrine sql filter.
      *
      * @param SQLFilter $filter The doctrine sql filter
-     * @param string    $name   The name of sql filter
      */
-    abstract protected function injectParameters(SQLFilter $filter, $name);
+    abstract protected function injectParameters(SQLFilter $filter);
 }

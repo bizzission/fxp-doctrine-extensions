@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests\Filter;
+namespace Sonatra\Component\DoctrineExtensions\Tests\Filter\Listener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
@@ -55,7 +55,7 @@ class AbstractFilterSubscriberTest extends \PHPUnit_Framework_TestCase
 
         $listener->expects($this->once())
             ->method('injectParameters')
-            ->with($filter, 'foo');
+            ->with($filter);
 
         $this->assertEquals(array(
             KernelEvents::REQUEST => array(

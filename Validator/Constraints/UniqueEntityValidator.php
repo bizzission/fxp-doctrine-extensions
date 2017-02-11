@@ -14,6 +14,7 @@ namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Util\ClassUtils;
 use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
 use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
 use Sonatra\Component\DoctrineExtensions\Util\SqlFilterUtil;
@@ -92,7 +93,7 @@ class UniqueEntityValidator extends ConstraintValidator
         $filters = SqlFilterUtil::findFilters($em, (array) $constraint->filters, $constraint->allFilters);
 
         SqlFilterUtil::disableFilters($em, $filters);
-        $repository = $em->getRepository(get_class($entity));
+        $repository = $em->getRepository(ClassUtils::getClass($entity));
         $result = $repository->{$constraint->repositoryMethod}($criteria);
         SqlFilterUtil::enableFilters($em, $filters);
 
@@ -139,7 +140,7 @@ class UniqueEntityValidator extends ConstraintValidator
     {
         /* @var UniqueEntity $constraint */
         /* @var \Doctrine\ORM\Mapping\ClassMetadata $class */
-        $class = $em->getClassMetadata(get_class($entity));
+        $class = $em->getClassMetadata(ClassUtils::getClass($entity));
         $fields = (array) $constraint->fields;
         $criteria = array();
 

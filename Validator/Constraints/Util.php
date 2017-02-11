@@ -13,6 +13,7 @@ namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Util\ClassUtils;
 use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
 use Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
@@ -85,7 +86,7 @@ class Util
                 throw new ConstraintDefinitionException(sprintf('Object manager "%s" does not exist.', $constraint->em));
             }
         } else {
-            $em = $registry->getManagerForClass(get_class($entity));
+            $em = $registry->getManagerForClass(ClassUtils::getClass($entity));
 
             if (!$em) {
                 throw new ConstraintDefinitionException(sprintf('Unable to find the object manager associated with an entity of class "%s".', get_class($entity)));

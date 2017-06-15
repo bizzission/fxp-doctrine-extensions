@@ -14,6 +14,7 @@ namespace Sonatra\Component\DoctrineExtensions\Tests\Filter\Listener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Query\FilterCollection;
+use PHPUnit\Framework\TestCase;
 use Sonatra\Component\DoctrineExtensions\Filter\Listener\AbstractFilterSubscriber;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -23,7 +24,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  *
  * @author François Pluchino <francois.pluchino@sonatra.com>
  */
-class AbstractFilterSubscriberTest extends \PHPUnit_Framework_TestCase
+class AbstractFilterSubscriberTest extends TestCase
 {
     public function testInjectParameters()
     {

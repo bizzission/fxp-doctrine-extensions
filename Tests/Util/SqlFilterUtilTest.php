@@ -14,6 +14,7 @@ namespace Sonatra\Component\DoctrineExtensions\Tests\Util;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Query\FilterCollection;
+use PHPUnit\Framework\TestCase;
 use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
 use Sonatra\Component\DoctrineExtensions\Util\SqlFilterUtil;
 
@@ -22,7 +23,7 @@ use Sonatra\Component\DoctrineExtensions\Util\SqlFilterUtil;
  *
  * @author François Pluchino <francois.pluchino@sonatra.com>
  */
-class SqlFilterUtilTest extends \PHPUnit_Framework_TestCase
+class SqlFilterUtilTest extends TestCase
 {
     /**
      * @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject

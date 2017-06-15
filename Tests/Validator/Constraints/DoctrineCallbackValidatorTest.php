@@ -12,6 +12,7 @@
 namespace Sonatra\Component\DoctrineExtensions\Tests\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use PHPUnit\Framework\TestCase;
 use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass;
 use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorObject;
 use Sonatra\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallback;
@@ -25,7 +26,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *
  * @author François Pluchino <francois.pluchino@sonatra.com>
  */
-class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
+class DoctrineCallbackValidatorTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -259,7 +260,7 @@ class DoctrineCallbackValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testNoConstructorArguments()
     {
-        new DoctrineCallback();
+        $this->assertInstanceOf(DoctrineCallback::class, new DoctrineCallback());
     }
 
     public function testAnnotationInvocationSingleValued()

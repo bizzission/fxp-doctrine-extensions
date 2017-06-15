@@ -17,6 +17,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\Common\Reflection\StaticReflectionProperty;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use PHPUnit\Framework\TestCase;
 use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
 use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter;
 use Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity;
@@ -40,7 +41,7 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
  *
  * @author François Pluchino <francois.pluchino@sonatra.com>
  */
-class UniqueEntityValidatorTest extends \PHPUnit_Framework_TestCase
+class UniqueEntityValidatorTest extends TestCase
 {
     protected function createRegistryMock($entityManagerName, $em)
     {

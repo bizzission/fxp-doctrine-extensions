@@ -15,6 +15,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\FilterCollection;
+use PHPUnit\Framework\TestCase;
 use Sonatra\Component\DoctrineExtensions\Filter\AbstractFilter;
 use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
 
@@ -23,7 +24,7 @@ use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
  *
  * @author François Pluchino <francois.pluchino@sonatra.com>
  */
-class AbstractFilterTest extends \PHPUnit_Framework_TestCase
+class AbstractFilterTest extends TestCase
 {
     public function getParameters()
     {

@@ -14,14 +14,14 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.0.0",
         "doctrine/orm": "^2.5.0"
     },
     "require-dev": {
-        "symfony/http-kernel": "^3.0.0",
-        "symfony/event-dispatcher": "^3.0.0",
-        "symfony/doctrine-bridge": "^3.0.0",
-        "symfony/validator": "^3.0.0"
+        "symfony/http-kernel": "^3.3.0",
+        "symfony/event-dispatcher": "^3.3.0",
+        "symfony/doctrine-bridge": "^3.3.0",
+        "symfony/validator": "^3.3.0"
     },
     "suggest": {
         "stof/doctrine-extensions-bundle": "For use some nice extensions for doctrine",

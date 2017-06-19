@@ -120,9 +120,7 @@ class UniqueEntityValidator extends ConstraintValidator
     {
         return 0 === count($result)
             || (1 === count($result)
-                && $entity === ($result instanceof \Iterator
-                    ? $result->current()
-                    : current($result)));
+                && $entity === ($result instanceof \Iterator ? $result->current() : current($result)));
     }
 
     /**
@@ -217,7 +215,6 @@ class UniqueEntityValidator extends ConstraintValidator
             $em->initializeObject($criteria[$fieldName]);
 
             $relatedClass = $em->getClassMetadata($class->getAssociationTargetClass($fieldName));
-            $isObject = is_object($criteria[$fieldName]);
             $relatedId = $relatedClass->getIdentifierValues($criteria[$fieldName]);
 
             if (count($relatedId) > 1) {
@@ -228,34 +225,7 @@ class UniqueEntityValidator extends ConstraintValidator
             }
 
             $value = array_pop($relatedId);
-            $criteria[$fieldName] = $isObject && null === $value
-                ? $this->formatEmptyIdentifier($relatedClass)
-                : $value;
-        }
-    }
-
-    /**
-     * Format the empty identifier value for entity with relation.
-     *
-     * @param ClassMetadata $meta The class metadata of entity relation
-     *
-     * @return int|string
-     */
-    private function formatEmptyIdentifier(ClassMetadata $meta)
-    {
-        $type = $meta->getTypeOfField(current($meta->getIdentifier()));
-
-        switch ($type) {
-            case 'bigint':
-            case 'decimal':
-            case 'integer':
-            case 'smallint':
-            case 'float':
-                return 0;
-            case 'guid':
-                return '00000000-0000-0000-0000-000000000000';
-            default:
-                return '';
+            $criteria[$fieldName] = Util::getFormattedIdentifier($relatedClass, $criteria, $fieldName, $value);
         }
     }
 }

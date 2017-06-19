@@ -12,6 +12,7 @@
 namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
@@ -23,6 +24,50 @@ use Symfony\Component\Validator\Constraint;
  */
 class Util
 {
+    /**
+     * Get the formatted identifier.
+     *
+     * @param ClassMetadata   $relatedClass The metadata of related class
+     * @param array           $criteria     The validator criteria
+     * @param string          $fieldName    The field name
+     * @param int|string|null $value        The identifier value
+     *
+     * @return int|string
+     */
+    public static function getFormattedIdentifier(ClassMetadata $relatedClass, array $criteria, $fieldName, $value)
+    {
+        $isObject = is_object($criteria[$fieldName]);
+
+        return $isObject && null === $value
+            ? self::formatEmptyIdentifier($relatedClass)
+            : $value;
+    }
+
+    /**
+     * Format the empty identifier value for entity with relation.
+     *
+     * @param ClassMetadata $meta The class metadata of entity relation
+     *
+     * @return int|string
+     */
+    public static function formatEmptyIdentifier(ClassMetadata $meta)
+    {
+        $type = $meta->getTypeOfField(current($meta->getIdentifier()));
+
+        switch ($type) {
+            case 'bigint':
+            case 'decimal':
+            case 'integer':
+            case 'smallint':
+            case 'float':
+                return 0;
+            case 'guid':
+                return '00000000-0000-0000-0000-000000000000';
+            default:
+                return '';
+        }
+    }
+
     /**
      * Pre validate entity.
      *

@@ -124,7 +124,7 @@ class OrmTestCase extends TestCase
             $config->setSecondLevelCacheConfiguration($cacheConfig);
         }
 
-        if ($conn === null) {
+        if (null === $conn) {
             $conn = array(
                 'driverClass' => Mocks\DriverMock::class,
                 'wrapperClass' => Mocks\ConnectionMock::class,
@@ -145,7 +145,7 @@ class OrmTestCase extends TestCase
      */
     private static function getSharedMetadataCacheImpl()
     {
-        if (self::$_metadataCacheImpl === null) {
+        if (null === self::$_metadataCacheImpl) {
             self::$_metadataCacheImpl = new ArrayCache();
         }
 
@@ -157,7 +157,7 @@ class OrmTestCase extends TestCase
      */
     private static function getSharedQueryCacheImpl()
     {
-        if (self::$_queryCacheImpl === null) {
+        if (null === self::$_queryCacheImpl) {
             self::$_queryCacheImpl = new ArrayCache();
         }
 
@@ -169,7 +169,7 @@ class OrmTestCase extends TestCase
      */
     protected function getSharedSecondLevelCacheDriverImpl()
     {
-        if ($this->secondLevelCacheDriverImpl === null) {
+        if (null === $this->secondLevelCacheDriverImpl) {
             $this->secondLevelCacheDriverImpl = new ArrayCache();
         }
 

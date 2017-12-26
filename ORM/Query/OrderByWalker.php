@@ -74,7 +74,7 @@ class OrderByWalker extends TreeWalkerAdapter
             $alias = $aliases[$i];
             $direction = $directions[$i];
 
-            if ($alias !== false) {
+            if (false !== $alias) {
                 if (!array_key_exists($alias, $components)) {
                     throw new \UnexpectedValueException("There is no component aliased by [{$alias}] in the given Query");
                 }
@@ -93,7 +93,7 @@ class OrderByWalker extends TreeWalkerAdapter
 
             $pathExpression = $field;
 
-            if ($alias !== false) {
+            if (false !== $alias) {
                 $pathExpression = new PathExpression(PathExpression::TYPE_STATE_FIELD, $alias, $field);
                 $pathExpression->type = PathExpression::TYPE_STATE_FIELD;
             }

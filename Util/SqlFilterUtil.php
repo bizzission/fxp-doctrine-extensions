@@ -33,7 +33,7 @@ class SqlFilterUtil
     public static function findFilters($om, array $filters, $all = false)
     {
         if (!$om instanceof EntityManagerInterface || (empty($filters) && !$all)) {
-            return array();
+            return [];
         }
 
         $all = ($all && !empty($filters)) ? false : $all;
@@ -51,7 +51,7 @@ class SqlFilterUtil
      */
     public static function getEnabledFilters($om)
     {
-        $filters = array();
+        $filters = [];
 
         if ($om instanceof EntityManagerInterface) {
             $enabledFilters = $om->getFilters()->getEnabledFilters();
@@ -124,7 +124,7 @@ class SqlFilterUtil
      */
     protected static function doFindFilters(array $filters, array $enabledFilters, $all)
     {
-        $reactivateFilters = array();
+        $reactivateFilters = [];
 
         foreach ($enabledFilters as $name => $filter) {
             if (in_array($name, $filters) || $all) {

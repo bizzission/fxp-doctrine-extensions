@@ -48,18 +48,18 @@ class SqlFilterUtilTest extends TestCase
     public function testGetEnabledFilters()
     {
         /* @var SQLFilter|\PHPUnit_Framework_MockObject_MockObject $filter */
-        $filter = $this->getMockForAbstractClass(SQLFilter::class, array($this->em));
+        $filter = $this->getMockForAbstractClass(SQLFilter::class, [$this->em]);
         $barFilter = new BarFilter($this->em);
         $barFilter->disable();
-        $expected = array(
+        $expected = [
             'foo' => $filter,
-        );
+        ];
 
         $this->filterCollection->expects($this->once())
             ->method('getEnabledFilters')
-            ->willReturn(array_merge($expected, array(
+            ->willReturn(array_merge($expected, [
                 'bar' => $barFilter,
-            )));
+            ]));
 
         $this->assertEquals($expected, SqlFilterUtil::getEnabledFilters($this->em));
     }

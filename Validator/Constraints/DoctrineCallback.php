@@ -52,7 +52,7 @@ class DoctrineCallback extends Constraint
      */
     public function getTargets()
     {
-        return array(self::CLASS_CONSTRAINT, self::PROPERTY_CONSTRAINT);
+        return [self::CLASS_CONSTRAINT, self::PROPERTY_CONSTRAINT];
     }
 
     /**
@@ -81,7 +81,7 @@ class DoctrineCallback extends Constraint
     protected function initArrayCallbackOption($options)
     {
         if (!isset($options['callback']) && !isset($options['groups']) && is_callable($options)) {
-            $options = array('callback' => $options);
+            $options = ['callback' => $options];
         }
 
         return $options;

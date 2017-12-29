@@ -29,7 +29,7 @@ class FooCallbackValidatorObject
      */
     public function validate(ExecutionContextInterface $context)
     {
-        $context->addViolation('My message', array('{{ value }}' => 'foobar'));
+        $context->addViolation('My message', ['{{ value }}' => 'foobar']);
 
         return false;
     }
@@ -44,7 +44,7 @@ class FooCallbackValidatorObject
      */
     public static function validateStatic($object, ExecutionContextInterface $context)
     {
-        $context->addViolation('Static message', array('{{ value }}' => 'baz'));
+        $context->addViolation('Static message', ['{{ value }}' => 'baz']);
 
         return false;
     }

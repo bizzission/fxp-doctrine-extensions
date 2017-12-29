@@ -57,7 +57,7 @@ class UniqueEntityValidatorTest extends TestCase
     protected function createRepositoryMock()
     {
         $repository = $this->getMockBuilder(ObjectRepository::class)
-            ->setMethods(array('findByCustom', 'find', 'findAll', 'findOneBy', 'findBy', 'getClassName'))
+            ->setMethods(['findByCustom', 'find', 'findAll', 'findOneBy', 'findBy', 'getClassName'])
             ->getMock()
         ;
 
@@ -82,7 +82,7 @@ class UniqueEntityValidatorTest extends TestCase
         ;
         $refl = $this->getMockBuilder(StaticReflectionProperty::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('getValue'))
+            ->setMethods(['getValue'])
             ->getMock()
         ;
         $refl
@@ -91,7 +91,7 @@ class UniqueEntityValidatorTest extends TestCase
             ->will($this->returnValue(true))
         ;
         /* @var \Doctrine\ORM\Mapping\ClassMetadata $classMetadata */
-        $classMetadata->reflFields = array('name' => $refl);
+        $classMetadata->reflFields = ['name' => $refl];
         $em->expects($this->any())
             ->method('getClassMetadata')
             ->will($this->returnValue($classMetadata))
@@ -111,13 +111,13 @@ class UniqueEntityValidatorTest extends TestCase
         return $validatorFactory;
     }
 
-    protected function createValidator($entityManagerName, $em, $validateClass = null, $uniqueFields = null, $errorPath = null, $repositoryMethod = 'findBy', $ignoreNull = true, array $filters = array(), $all = true)
+    protected function createValidator($entityManagerName, $em, $validateClass = null, $uniqueFields = null, $errorPath = null, $repositoryMethod = 'findBy', $ignoreNull = true, array $filters = [], $all = true)
     {
         if (!$validateClass) {
             $validateClass = SingleIntIdEntity::class;
         }
         if (!$uniqueFields) {
-            $uniqueFields = array('name');
+            $uniqueFields = ['name'];
         }
 
         /* @var ManagerRegistry $registry */
@@ -126,7 +126,7 @@ class UniqueEntityValidatorTest extends TestCase
         $uniqueValidator = new UniqueEntityValidator($registry);
 
         $metadata = new ClassMetadata($validateClass);
-        $constraint = new UniqueEntity(array(
+        $constraint = new UniqueEntity([
             'fields' => $uniqueFields,
             'em' => $entityManagerName,
             'errorPath' => $errorPath,
@@ -134,7 +134,7 @@ class UniqueEntityValidatorTest extends TestCase
             'ignoreNull' => $ignoreNull,
             'filters' => $filters,
             'allFilters' => $all,
-        ));
+        ]);
         $metadata->addConstraint($constraint);
 
         $metadataFactory = new FakeMetadataFactory();
@@ -143,19 +143,19 @@ class UniqueEntityValidatorTest extends TestCase
         $validatorFactory = $this->createValidatorFactory($uniqueValidator);
         $contextFactory = new ExecutionContextFactory(new IdentityTranslator(), null);
 
-        return new RecursiveValidator($contextFactory, $metadataFactory, $validatorFactory, array());
+        return new RecursiveValidator($contextFactory, $metadataFactory, $validatorFactory, []);
     }
 
     protected function createSchema($em)
     {
         /* @var EntityManagerInterface $em */
         $schemaTool = new SchemaTool($em);
-        $schemaTool->createSchema(array(
+        $schemaTool->createSchema([
                 $em->getClassMetadata(SingleIntIdEntity::class),
                 $em->getClassMetadata(DoubleNameEntity::class),
                 $em->getClassMetadata(CompositeIntIdEntity::class),
                 $em->getClassMetadata(AssociationEntity::class),
-            ));
+            ]);
     }
 
     /**
@@ -187,7 +187,7 @@ class UniqueEntityValidatorTest extends TestCase
         $em = DoctrineTestHelper::createTestEntityManager();
         $registry = $this->createRegistryMock($entityManagerName, $em);
         $validator = new UniqueEntityValidator($registry);
-        $constraint = new UniqueEntity(array('fields' => 42));
+        $constraint = new UniqueEntity(['fields' => 42]);
         $entity = new SingleIntIdEntity(1, 'Foo');
 
         $validator->validate($entity, $constraint);
@@ -204,7 +204,7 @@ class UniqueEntityValidatorTest extends TestCase
         $em = DoctrineTestHelper::createTestEntityManager();
         $registry = $this->createRegistryMock($entityManagerName, $em);
         $validator = new UniqueEntityValidator($registry);
-        $constraint = new UniqueEntity(array('fields' => 'name', 'errorPath' => 42));
+        $constraint = new UniqueEntity(['fields' => 'name', 'errorPath' => 42]);
         $entity = new SingleIntIdEntity(1, 'Foo');
 
         $validator->validate($entity, $constraint);
@@ -221,8 +221,8 @@ class UniqueEntityValidatorTest extends TestCase
         $em = DoctrineTestHelper::createTestEntityManager();
         $registry = $this->createRegistryMock($entityManagerName, $em);
         $validator = new UniqueEntityValidator($registry);
-        $constraint = new UniqueEntity(array('fields' => 'name'));
-        $constraint->fields = array();
+        $constraint = new UniqueEntity(['fields' => 'name']);
+        $constraint->fields = [];
         $entity = new SingleIntIdEntity(1, 'Foo');
 
         $validator->validate($entity, $constraint);
@@ -319,7 +319,7 @@ class UniqueEntityValidatorTest extends TestCase
         $validateClass = DoubleNameEntity::class;
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, $validateClass, array('name', 'name2'), 'bar', 'findby', false);
+        $validator = $this->createValidator($entityManagerName, $em, $validateClass, ['name', 'name2'], 'bar', 'findby', false);
 
         $entity1 = new DoubleNameEntity(1, 'Foo', null);
         $violationsList = $validator->validate($entity1);
@@ -370,10 +370,10 @@ class UniqueEntityValidatorTest extends TestCase
         $repository = $this->createRepositoryMock();
         $repository->expects($this->once())
             ->method('findByCustom')
-            ->will($this->returnValue(array()))
+            ->will($this->returnValue([]))
         ;
         $em = $this->createEntityManagerMock($repository);
-        $validator = $this->createValidator($entityManagerName, $em, null, array(), null, 'findByCustom');
+        $validator = $this->createValidator($entityManagerName, $em, null, [], null, 'findByCustom');
 
         $entity1 = new SingleIntIdEntity(1, 'foo');
 
@@ -391,9 +391,9 @@ class UniqueEntityValidatorTest extends TestCase
             ->method('findByCustom')
             ->will(
                 $this->returnCallback(function () use ($entity) {
-                    $returnValue = array(
+                    $returnValue = [
                             $entity,
-                        );
+                        ];
                     next($returnValue);
 
                     return $returnValue;
@@ -401,7 +401,7 @@ class UniqueEntityValidatorTest extends TestCase
             )
         ;
         $em = $this->createEntityManagerMock($repository);
-        $validator = $this->createValidator($entityManagerName, $em, null, array(), null, 'findByCustom');
+        $validator = $this->createValidator($entityManagerName, $em, null, [], null, 'findByCustom');
 
         $violationsList = $validator->validate($entity);
         $this->assertCount(0, $violationsList, 'Violation is using unrewound array as return value in the repository method.');
@@ -412,7 +412,7 @@ class UniqueEntityValidatorTest extends TestCase
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, array('single'));
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['single']);
 
         $entity1 = new SingleIntIdEntity(1, 'foo');
         $associated = new AssociationEntity();
@@ -440,7 +440,7 @@ class UniqueEntityValidatorTest extends TestCase
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, array('single'), null, 'findBy', false);
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['single'], null, 'findBy', false);
 
         $associated = new AssociationEntity();
         $associated->single = null;
@@ -461,7 +461,7 @@ class UniqueEntityValidatorTest extends TestCase
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, array('composite'));
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['composite']);
 
         $composite = new CompositeIntIdEntity(1, 1, 'test');
         $associated = new AssociationEntity();
@@ -480,16 +480,16 @@ class UniqueEntityValidatorTest extends TestCase
      */
     public function testDedicatedEntityManagerNullObject()
     {
-        $uniqueFields = array('name');
+        $uniqueFields = ['name'];
         $entityManagerName = 'foo';
 
         /* @var ManagerRegistry $registry */
         $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
 
-        $constraint = new UniqueEntity(array(
+        $constraint = new UniqueEntity([
             'fields' => $uniqueFields,
             'em' => $entityManagerName,
-        ));
+        ]);
 
         $uniqueValidator = new UniqueEntityValidator($registry);
 
@@ -504,14 +504,14 @@ class UniqueEntityValidatorTest extends TestCase
      */
     public function testEntityManagerNullObject()
     {
-        $uniqueFields = array('name');
+        $uniqueFields = ['name'];
 
         /* @var ManagerRegistry $registry */
         $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
 
-        $constraint = new UniqueEntity(array(
+        $constraint = new UniqueEntity([
             'fields' => $uniqueFields,
-        ));
+        ]);
 
         $uniqueValidator = new UniqueEntityValidator($registry);
 
@@ -553,7 +553,7 @@ class UniqueEntityValidatorTest extends TestCase
         $em->getFilters()->enable('fooFilter2');
         $em->getFilters()->enable('barFilter1');
         $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, null, null, null, 'findBy', true, array('fooFilter1'), false);
+        $validator = $this->createValidator($entityManagerName, $em, null, null, null, 'findBy', true, ['fooFilter1'], false);
         $entity1 = new SingleIntIdEntity(1, 'Foo');
 
         $this->assertCount(3, $em->getFilters()->getEnabledFilters());

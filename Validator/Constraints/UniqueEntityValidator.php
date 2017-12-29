@@ -140,7 +140,7 @@ class UniqueEntityValidator extends ConstraintValidator
         /* @var \Doctrine\ORM\Mapping\ClassMetadata $class */
         $class = $em->getClassMetadata(ClassUtils::getClass($entity));
         $fields = (array) $constraint->fields;
-        $criteria = array();
+        $criteria = [];
 
         foreach ($fields as $fieldName) {
             $criteria = $this->findFieldCriteria($criteria, $constraint, $em, $class, $entity, $fieldName);

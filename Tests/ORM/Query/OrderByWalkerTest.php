@@ -36,15 +36,15 @@ class OrderByWalkerTest extends OrmTestCase
     public function testOrderSingleField()
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
-        $treeWalkers = array(OrderByWalker::class);
+        $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
             ->useQueryCache(false);
 
-        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, array('u'));
-        $query->setHint(OrderByWalker::HINT_SORT_FIELD, array('username'));
-        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, array('desc'));
+        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['u']);
+        $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);
+        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, ['desc']);
 
         $expected = 'SELECT u0_.id AS id_0, u0_.username AS username_1 FROM users u0_ ORDER BY u0_.username DESC';
         $this->assertSame($expected, $query->getSQL());
@@ -53,15 +53,15 @@ class OrderByWalkerTest extends OrmTestCase
     public function testOrderMultipleFields()
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
-        $treeWalkers = array(OrderByWalker::class);
+        $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
             ->useQueryCache(false);
 
-        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, array('u', 'u'));
-        $query->setHint(OrderByWalker::HINT_SORT_FIELD, array('username', 'id'));
-        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, array('desc', 'asc'));
+        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['u', 'u']);
+        $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username', 'id']);
+        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, ['desc', 'asc']);
 
         $expected = 'SELECT u0_.id AS id_0, u0_.username AS username_1 FROM users u0_ ORDER BY u0_.username DESC, u0_.id ASC';
         $this->assertSame($expected, $query->getSQL());
@@ -70,7 +70,7 @@ class OrderByWalkerTest extends OrmTestCase
     public function testOrderWithoutField()
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
-        $treeWalkers = array(OrderByWalker::class);
+        $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
@@ -87,14 +87,14 @@ class OrderByWalkerTest extends OrmTestCase
     public function testOrderWithInvalidAliases()
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
-        $treeWalkers = array(OrderByWalker::class);
+        $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
             ->useQueryCache(false);
 
         $query->setHint(OrderByWalker::HINT_SORT_ALIAS, 'u');
-        $query->setHint(OrderByWalker::HINT_SORT_FIELD, array('username'));
+        $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);
         $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, 'desc');
 
         $query->getSQL();
@@ -107,15 +107,15 @@ class OrderByWalkerTest extends OrmTestCase
     public function testOrderWithInvalidAliasComponent()
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
-        $treeWalkers = array(OrderByWalker::class);
+        $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
             ->useQueryCache(false);
 
-        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, array('a'));
-        $query->setHint(OrderByWalker::HINT_SORT_FIELD, array('username'));
-        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, array('desc'));
+        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['a']);
+        $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);
+        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, ['desc']);
 
         $query->getSQL();
     }
@@ -127,15 +127,15 @@ class OrderByWalkerTest extends OrmTestCase
     public function testOrderWithInvalidField()
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
-        $treeWalkers = array(OrderByWalker::class);
+        $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
             ->useQueryCache(false);
 
-        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, array('u'));
-        $query->setHint(OrderByWalker::HINT_SORT_FIELD, array('foo'));
-        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, array('desc'));
+        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['u']);
+        $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['foo']);
+        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, ['desc']);
 
         $query->getSQL();
     }
@@ -147,15 +147,15 @@ class OrderByWalkerTest extends OrmTestCase
     public function testOrderWithoutAliasAndComponent()
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
-        $treeWalkers = array(OrderByWalker::class);
+        $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
             ->useQueryCache(false);
 
-        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, array(false));
-        $query->setHint(OrderByWalker::HINT_SORT_FIELD, array('username'));
-        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, array('desc'));
+        $query->setHint(OrderByWalker::HINT_SORT_ALIAS, [false]);
+        $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);
+        $query->setHint(OrderByWalker::HINT_SORT_DIRECTION, ['desc']);
 
         $query->getSQL();
     }

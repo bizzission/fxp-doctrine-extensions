@@ -50,11 +50,11 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array(
-                array('onEvent', 7),
-            ),
-        );
+        return [
+            KernelEvents::REQUEST => [
+                ['onEvent', 7],
+            ],
+        ];
     }
 
     /**

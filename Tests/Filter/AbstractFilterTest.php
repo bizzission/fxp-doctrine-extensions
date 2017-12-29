@@ -28,11 +28,11 @@ class AbstractFilterTest extends TestCase
 {
     public function getParameters()
     {
-        return array(
-            array(null, ''),
-            array(false, ''),
-            array(true, 'f.foo = "bar"'),
-        );
+        return [
+            [null, ''],
+            [false, ''],
+            [true, 'f.foo = "bar"'],
+        ];
     }
 
     /**

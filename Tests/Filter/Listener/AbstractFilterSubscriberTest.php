@@ -43,12 +43,12 @@ class AbstractFilterSubscriberTest extends TestCase
 
         $filterCollection->expects($this->once())
             ->method('getEnabledFilters')
-            ->willReturn(array(
+            ->willReturn([
                 'foo' => $filter,
-            ));
+            ]);
 
         /* @var AbstractFilterSubscriber|\PHPUnit_Framework_MockObject_MockObject $listener */
-        $listener = $this->getMockForAbstractClass(AbstractFilterSubscriber::class, array($em));
+        $listener = $this->getMockForAbstractClass(AbstractFilterSubscriber::class, [$em]);
 
         $listener->expects($this->once())
             ->method('supports')
@@ -58,11 +58,11 @@ class AbstractFilterSubscriberTest extends TestCase
             ->method('injectParameters')
             ->with($filter);
 
-        $this->assertEquals(array(
-            KernelEvents::REQUEST => array(
-                array('onEvent', 7),
-            ),
-        ), $listener->getSubscribedEvents());
+        $this->assertEquals([
+            KernelEvents::REQUEST => [
+                ['onEvent', 7],
+            ],
+        ], $listener->getSubscribedEvents());
 
         $listener->onEvent($event);
     }

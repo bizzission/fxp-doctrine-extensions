@@ -23,6 +23,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity as BaseUniqueEnti
 class UniqueEntity extends BaseUniqueEntity
 {
     public $service = 'fxp.doctrine_extensions.orm.validator.unique';
-    public $filters = array();
+    public $filters = [];
     public $allFilters = true;
 }

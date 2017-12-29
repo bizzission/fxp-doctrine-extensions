@@ -24,15 +24,15 @@ class UtilTest extends TestCase
 {
     public function getIdentifierTypes()
     {
-        return array(
-            array('bigint', 0),
-            array('decimal', 0),
-            array('integer', 0),
-            array('smallint', 0),
-            array('float', 0),
-            array('guid', '00000000-0000-0000-0000-000000000000'),
-            array('other', ''),
-        );
+        return [
+            ['bigint', 0],
+            ['decimal', 0],
+            ['integer', 0],
+            ['smallint', 0],
+            ['float', 0],
+            ['guid', '00000000-0000-0000-0000-000000000000'],
+            ['other', ''],
+        ];
     }
 
     /**
@@ -47,7 +47,7 @@ class UtilTest extends TestCase
         $meta = $this->getMockBuilder(ClassMetadata::class)->getMock();
         $meta->expects($this->any())
             ->method('getIdentifier')
-            ->willReturn(array('id'));
+            ->willReturn(['id']);
 
         $meta->expects($this->any())
             ->method('getTypeOfField')
@@ -67,15 +67,15 @@ class UtilTest extends TestCase
     {
         $fieldName = 'single';
         $value = null;
-        $criteria = array(
+        $criteria = [
             $fieldName => new \stdClass(),
-        );
+        ];
 
         /* @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
         $meta = $this->getMockBuilder(ClassMetadata::class)->getMock();
         $meta->expects($this->any())
             ->method('getIdentifier')
-            ->willReturn(array($fieldName));
+            ->willReturn([$fieldName]);
 
         $meta->expects($this->any())
             ->method('getTypeOfField')

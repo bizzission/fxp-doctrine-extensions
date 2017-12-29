@@ -62,7 +62,7 @@ class OrmTestCase extends TestCase
      *
      * @return \Doctrine\ORM\Mapping\Driver\AnnotationDriver
      */
-    protected function createAnnotationDriver($paths = array())
+    protected function createAnnotationDriver($paths = [])
     {
         if (version_compare(Version::VERSION, '3.0.0', '>=')) {
             $reader = new Annotations\CachedReader(new Annotations\AnnotationReader(), new ArrayCache());
@@ -103,14 +103,14 @@ class OrmTestCase extends TestCase
         $config = new Configuration();
 
         $config->setMetadataCacheImpl($metadataCache);
-        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver(array(), true));
+        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver([], true));
         $config->setQueryCacheImpl(self::getSharedQueryCacheImpl());
         $config->setProxyDir(__DIR__.'/Proxies');
         $config->setProxyNamespace('Fxp\Component\DoctrineExtensions\Tests\Proxies');
         $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver(
-            array(
+            [
                 realpath(__DIR__.'/Models'),
-            ), true));
+            ], true));
 
         if ($this->isSecondLevelCacheEnabled) {
             $cacheConfig = new CacheConfiguration();
@@ -125,12 +125,12 @@ class OrmTestCase extends TestCase
         }
 
         if (null === $conn) {
-            $conn = array(
+            $conn = [
                 'driverClass' => Mocks\DriverMock::class,
                 'wrapperClass' => Mocks\ConnectionMock::class,
                 'user' => 'john',
                 'password' => 'doe',
-            );
+            ];
         }
 
         if (is_array($conn)) {

@@ -1,25 +1,25 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests\ORM\Query;
+namespace Fxp\Component\DoctrineExtensions\Tests\ORM\Query;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
-use Sonatra\Component\DoctrineExtensions\ORM\Query\OrderByWalker;
-use Sonatra\Component\DoctrineExtensions\Tests\OrmTestCase;
+use Fxp\Component\DoctrineExtensions\ORM\Query\OrderByWalker;
+use Fxp\Component\DoctrineExtensions\Tests\OrmTestCase;
 
 /**
  * Tests case for order by walker.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class OrderByWalkerTest extends OrmTestCase
 {
@@ -35,7 +35,7 @@ class OrderByWalkerTest extends OrmTestCase
 
     public function testOrderSingleField()
     {
-        $dqlToBeTested = 'SELECT u FROM Sonatra\Component\DoctrineExtensions\Tests\Models\UserMock u';
+        $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = array(OrderByWalker::class);
 
         $query = $this->em->createQuery($dqlToBeTested);
@@ -52,7 +52,7 @@ class OrderByWalkerTest extends OrmTestCase
 
     public function testOrderMultipleFields()
     {
-        $dqlToBeTested = 'SELECT u FROM Sonatra\Component\DoctrineExtensions\Tests\Models\UserMock u';
+        $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = array(OrderByWalker::class);
 
         $query = $this->em->createQuery($dqlToBeTested);
@@ -69,7 +69,7 @@ class OrderByWalkerTest extends OrmTestCase
 
     public function testOrderWithoutField()
     {
-        $dqlToBeTested = 'SELECT u FROM Sonatra\Component\DoctrineExtensions\Tests\Models\UserMock u';
+        $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = array(OrderByWalker::class);
 
         $query = $this->em->createQuery($dqlToBeTested);
@@ -86,7 +86,7 @@ class OrderByWalkerTest extends OrmTestCase
      */
     public function testOrderWithInvalidAliases()
     {
-        $dqlToBeTested = 'SELECT u FROM Sonatra\Component\DoctrineExtensions\Tests\Models\UserMock u';
+        $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = array(OrderByWalker::class);
 
         $query = $this->em->createQuery($dqlToBeTested);
@@ -106,7 +106,7 @@ class OrderByWalkerTest extends OrmTestCase
      */
     public function testOrderWithInvalidAliasComponent()
     {
-        $dqlToBeTested = 'SELECT u FROM Sonatra\Component\DoctrineExtensions\Tests\Models\UserMock u';
+        $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = array(OrderByWalker::class);
 
         $query = $this->em->createQuery($dqlToBeTested);
@@ -126,7 +126,7 @@ class OrderByWalkerTest extends OrmTestCase
      */
     public function testOrderWithInvalidField()
     {
-        $dqlToBeTested = 'SELECT u FROM Sonatra\Component\DoctrineExtensions\Tests\Models\UserMock u';
+        $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = array(OrderByWalker::class);
 
         $query = $this->em->createQuery($dqlToBeTested);
@@ -146,7 +146,7 @@ class OrderByWalkerTest extends OrmTestCase
      */
     public function testOrderWithoutAliasAndComponent()
     {
-        $dqlToBeTested = 'SELECT u FROM Sonatra\Component\DoctrineExtensions\Tests\Models\UserMock u';
+        $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = array(OrderByWalker::class);
 
         $query = $this->em->createQuery($dqlToBeTested);

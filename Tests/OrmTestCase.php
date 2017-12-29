@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests;
+namespace Fxp\Component\DoctrineExtensions\Tests;
 
 use Doctrine\Common\Annotations;
 use Doctrine\Common\Cache\ArrayCache;
@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests case for orm.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class OrmTestCase extends TestCase
 {
@@ -106,7 +106,7 @@ class OrmTestCase extends TestCase
         $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver(array(), true));
         $config->setQueryCacheImpl(self::getSharedQueryCacheImpl());
         $config->setProxyDir(__DIR__.'/Proxies');
-        $config->setProxyNamespace('Sonatra\Component\DoctrineExtensions\Tests\Proxies');
+        $config->setProxyNamespace('Fxp\Component\DoctrineExtensions\Tests\Proxies');
         $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver(
             array(
                 realpath(__DIR__.'/Models'),

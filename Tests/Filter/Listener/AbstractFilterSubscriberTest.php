@@ -1,28 +1,28 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests\Filter\Listener;
+namespace Fxp\Component\DoctrineExtensions\Tests\Filter\Listener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Query\FilterCollection;
+use Fxp\Component\DoctrineExtensions\Filter\Listener\AbstractFilterSubscriber;
 use PHPUnit\Framework\TestCase;
-use Sonatra\Component\DoctrineExtensions\Filter\Listener\AbstractFilterSubscriber;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Tests case for abstract sql filter event subscriber.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class AbstractFilterSubscriberTest extends TestCase
 {

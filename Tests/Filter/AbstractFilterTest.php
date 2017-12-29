@@ -1,28 +1,28 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests\Filter;
+namespace Fxp\Component\DoctrineExtensions\Tests\Filter;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\FilterCollection;
+use Fxp\Component\DoctrineExtensions\Filter\AbstractFilter;
+use Fxp\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
 use PHPUnit\Framework\TestCase;
-use Sonatra\Component\DoctrineExtensions\Filter\AbstractFilter;
-use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
 
 /**
  * Tests case for abstract sql filter.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class AbstractFilterTest extends TestCase
 {

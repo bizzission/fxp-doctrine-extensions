@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests\Mocks;
+namespace Fxp\Component\DoctrineExtensions\Tests\Mocks;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Configuration;
@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * Special EntityManager mock used for testing purposes.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class EntityManagerMock extends EntityManager
 {

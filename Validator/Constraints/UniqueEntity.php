@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Validator\Constraints;
+namespace Fxp\Component\DoctrineExtensions\Validator\Constraints;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity as BaseUniqueEntity;
 
@@ -18,11 +18,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity as BaseUniqueEnti
  *
  * @Annotation
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class UniqueEntity extends BaseUniqueEntity
 {
-    public $service = 'sonatra.doctrine_extensions.orm.validator.unique';
+    public $service = 'fxp.doctrine_extensions.orm.validator.unique';
     public $filters = array();
     public $allFilters = true;
 }

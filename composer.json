@@ -1,14 +1,14 @@
 {
-    "name": "sonatra/doctrine-extensions",
+    "name": "fxp/doctrine-extensions",
     "type": "library",
     "description": "Add doctrine unique entity validator",
     "keywords": ["doctrine", "extensions", "validator", "unique entity"],
-    "homepage": "https://github.com/sonatra/sonatra-doctrine-extensions",
+    "homepage": "https://github.com/fxpio/fxp-doctrine-extensions",
     "license": "MIT",
     "authors": [
         {
             "name": "François Pluchino",
-            "email": "francois.pluchino@sonatra.com"
+            "email": "francois.pluchino@gmail.com"
         }
     ],
     "minimum-stability": "dev",
@@ -28,7 +28,7 @@
         "creof/doctrine2-spatial": "For add geo spacial extensions"
     },
     "autoload": {
-        "psr-4": { "Sonatra\\Component\\DoctrineExtensions\\": "" },
+        "psr-4": { "Fxp\\Component\\DoctrineExtensions\\": "" },
         "exclude-from-classmap": [
             "/Tests/"
         ]

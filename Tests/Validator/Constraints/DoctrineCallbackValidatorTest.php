@@ -1,22 +1,22 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests\Validator\Constraints;
+namespace Fxp\Component\DoctrineExtensions\Tests\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Fxp\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass;
+use Fxp\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorObject;
+use Fxp\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallback;
+use Fxp\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallbackValidator;
 use PHPUnit\Framework\TestCase;
-use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass;
-use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorObject;
-use Sonatra\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallback;
-use Sonatra\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallbackValidator;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * Tests case for doctrine callback validator.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class DoctrineCallbackValidatorTest extends TestCase
 {
@@ -219,7 +219,7 @@ class DoctrineCallbackValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
      */
     public function testExpectValidConstraint()
     {
@@ -231,7 +231,7 @@ class DoctrineCallbackValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
      */
     public function testExpectValidMethods()
     {
@@ -241,7 +241,7 @@ class DoctrineCallbackValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
      */
     public function testExpectValidCallbacks()
     {

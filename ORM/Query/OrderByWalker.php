@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\ORM\Query;
+namespace Fxp\Component\DoctrineExtensions\ORM\Query;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\AST\OrderByClause;
@@ -22,24 +22,24 @@ use Doctrine\ORM\Query\TreeWalkerAdapter;
  * OrderBy Query TreeWalker for Sortable functionality
  * in doctrine paginator.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class OrderByWalker extends TreeWalkerAdapter
 {
     /**
      * Sort key alias hint name.
      */
-    const HINT_SORT_ALIAS = 'sonatra_paginator.sort.alias';
+    const HINT_SORT_ALIAS = 'fxp_paginator.sort.alias';
 
     /**
      * Sort key field hint name.
      */
-    const HINT_SORT_FIELD = 'sonatra_paginator.sort.field';
+    const HINT_SORT_FIELD = 'fxp_paginator.sort.field';
 
     /**
      * Sort direction hint name.
      */
-    const HINT_SORT_DIRECTION = 'sonatra_paginator.sort.direction';
+    const HINT_SORT_DIRECTION = 'fxp_paginator.sort.direction';
 
     /**
      * {@inheritdoc}

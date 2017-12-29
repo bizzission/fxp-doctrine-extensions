@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Filter\Listener;
+namespace Fxp\Component\DoctrineExtensions\Filter\Listener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * Base of Symfony listener for Doctrine Filter with parameter injection.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 abstract class AbstractFilterSubscriber implements EventSubscriberInterface
 {

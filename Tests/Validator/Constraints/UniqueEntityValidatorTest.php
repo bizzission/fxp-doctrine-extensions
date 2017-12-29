@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Sonatra\Component\DoctrineExtensions\Tests\Validator\Constraints;
+namespace Fxp\Component\DoctrineExtensions\Tests\Validator\Constraints;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -17,11 +17,11 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\Common\Reflection\StaticReflectionProperty;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use Fxp\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
+use Fxp\Component\DoctrineExtensions\Tests\Fixtures\FooFilter;
+use Fxp\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity;
+use Fxp\Component\DoctrineExtensions\Validator\Constraints\UniqueEntityValidator;
 use PHPUnit\Framework\TestCase;
-use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
-use Sonatra\Component\DoctrineExtensions\Tests\Fixtures\FooFilter;
-use Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity;
-use Sonatra\Component\DoctrineExtensions\Validator\Constraints\UniqueEntityValidator;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\CompositeIntIdEntity;
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
 /**
  * Tests case for unique entity validator.
  *
- * @author François Pluchino <francois.pluchino@sonatra.com>
+ * @author François Pluchino <francois.pluchino@gmail.com>
  */
 class UniqueEntityValidatorTest extends TestCase
 {
@@ -159,7 +159,7 @@ class UniqueEntityValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
      */
     public function testConstraintIsNotUniqueEntity()
     {
@@ -177,7 +177,7 @@ class UniqueEntityValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
      */
     public function testConstraintWrongFieldType()
     {
@@ -194,7 +194,7 @@ class UniqueEntityValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\UnexpectedTypeException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
      */
     public function testConstraintWrongErrorPath()
     {
@@ -211,7 +211,7 @@ class UniqueEntityValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
      */
     public function testConstraintHasNotField()
     {
@@ -229,7 +229,7 @@ class UniqueEntityValidatorTest extends TestCase
     }
 
     /**
-     * @expectedException \Sonatra\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
+     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
      */
     public function testConstraintHasNotExistingField()
     {

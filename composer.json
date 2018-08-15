@@ -15,9 +15,15 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.1.0",
-        "doctrine/orm": "^2.6.0"
+        "doctrine/persistence": "^1.0.0",
+        "doctrine/orm": "^2.6.0",
+        "fxp/doctrine-extra": "^1.0.0"
     },
     "require-dev": {
+        "doctrine/annotations": "^1.6.0",
+        "doctrine/cache": "^1.7.0",
+        "doctrine/event-manager": "^1.0.0",
+        "doctrine/reflection": "^1.0.0",
         "symfony/http-kernel": "^4.1.0",
         "symfony/event-dispatcher": "^4.1.0",
         "symfony/doctrine-bridge": "^4.1.0",

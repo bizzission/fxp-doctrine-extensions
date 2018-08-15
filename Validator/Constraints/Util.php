@@ -14,9 +14,9 @@ namespace Fxp\Component\DoctrineExtensions\Validator\Constraints;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Util\ClassUtils;
 use Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException;
 use Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException;
+use Fxp\Component\DoctrineExtra\Util\ClassUtils;
 use Symfony\Component\Validator\Constraint;
 
 /**

@@ -36,7 +36,7 @@ class Util
      */
     public static function getFormattedIdentifier(ClassMetadata $relatedClass, array $criteria, $fieldName, $value)
     {
-        $isObject = is_object($criteria[$fieldName]);
+        $isObject = \is_object($criteria[$fieldName]);
 
         return $isObject && null === $value
             ? self::formatEmptyIdentifier($relatedClass)
@@ -100,15 +100,15 @@ class Util
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\UniqueEntity');
         }
 
-        if (!is_array($constraint->fields) && !is_string($constraint->fields)) {
+        if (!\is_array($constraint->fields) && !\is_string($constraint->fields)) {
             throw new UnexpectedTypeException($constraint->fields, 'array');
         }
 
-        if (null !== $constraint->errorPath && !is_string($constraint->errorPath)) {
+        if (null !== $constraint->errorPath && !\is_string($constraint->errorPath)) {
             throw new UnexpectedTypeException($constraint->errorPath, 'string or null');
         }
 
-        if (0 === count((array) $constraint->fields)) {
+        if (0 === \count((array) $constraint->fields)) {
             throw new ConstraintDefinitionException('At least one field has to be specified.');
         }
     }
@@ -134,7 +134,7 @@ class Util
             $em = $registry->getManagerForClass(ClassUtils::getClass($entity));
 
             if (!$em) {
-                throw new ConstraintDefinitionException(sprintf('Unable to find the object manager associated with an entity of class "%s".', get_class($entity)));
+                throw new ConstraintDefinitionException(sprintf('Unable to find the object manager associated with an entity of class "%s".', \get_class($entity)));
             }
         }
 

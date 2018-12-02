@@ -71,12 +71,12 @@ class DoctrineCallbackValidator extends ConstraintValidator
     {
         $callback = $constraint->callback;
 
-        if (is_array($callback) || $callback instanceof \Closure) {
-            if (!is_callable($callback)) {
+        if (\is_array($callback) || $callback instanceof \Closure) {
+            if (!\is_callable($callback)) {
                 throw new ConstraintDefinitionException(sprintf('"%s::%s" targeted by Callback constraint is not a valid callable', $callback[0], $callback[1]));
             }
 
-            call_user_func($callback, $object, $this->context, $this->registry);
+            \call_user_func($callback, $object, $this->context, $this->registry);
 
             return true;
         }

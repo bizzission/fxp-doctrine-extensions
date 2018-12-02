@@ -49,7 +49,7 @@ class OrderByWalker extends TreeWalkerAdapter
         $query = $this->_getQuery();
 
         // execute a walker for hint with string value
-        if (!is_array($query->getHint(self::HINT_SORT_FIELD))) {
+        if (!\is_array($query->getHint(self::HINT_SORT_FIELD))) {
             parent::walkSelectStatement($AST);
 
             return;
@@ -60,12 +60,12 @@ class OrderByWalker extends TreeWalkerAdapter
         $aliases = $query->getHint(self::HINT_SORT_ALIAS);
         $directions = $query->getHint(self::HINT_SORT_DIRECTION);
         $components = $this->_getQueryComponents();
-        $fieldsSize = count($fields);
+        $fieldsSize = \count($fields);
 
         // init ordering
         $AST->orderByClause = new OrderByClause([]);
 
-        if (!is_array($aliases) || !is_array($directions)) {
+        if (!\is_array($aliases) || !\is_array($directions)) {
             throw new \InvalidArgumentException('The HINT_SORT_ALIAS and HINT_SORT_DIRECTION must be an array');
         }
 

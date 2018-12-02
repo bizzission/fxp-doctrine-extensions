@@ -127,7 +127,7 @@ class SqlFilterUtil
         $reactivateFilters = [];
 
         foreach ($enabledFilters as $name => $filter) {
-            if (in_array($name, $filters) || $all) {
+            if (\in_array($name, $filters) || $all) {
                 $reactivateFilters[] = $name;
             }
         }

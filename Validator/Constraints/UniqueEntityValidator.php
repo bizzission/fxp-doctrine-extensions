@@ -97,7 +97,7 @@ class UniqueEntityValidator extends ConstraintValidator
         $result = $repository->{$constraint->repositoryMethod}($criteria);
         SqlFilterUtil::enableFilters($em, $filters);
 
-        if (is_array($result)) {
+        if (\is_array($result)) {
             reset($result);
         }
 
@@ -118,8 +118,8 @@ class UniqueEntityValidator extends ConstraintValidator
      */
     private function isValidResult($result, $entity)
     {
-        return 0 === count($result)
-            || (1 === count($result)
+        return 0 === \count($result)
+            || (1 === \count($result)
                 && $entity === ($result instanceof \Iterator ? $result->current() : current($result)));
     }
 
@@ -217,7 +217,7 @@ class UniqueEntityValidator extends ConstraintValidator
             $relatedClass = $em->getClassMetadata($class->getAssociationTargetClass($fieldName));
             $relatedId = $relatedClass->getIdentifierValues($criteria[$fieldName]);
 
-            if (count($relatedId) > 1) {
+            if (\count($relatedId) > 1) {
                 throw new ConstraintDefinitionException(
                     'Associated entities are not allowed to have more than one identifier field to be '.
                     'part of a unique constraint in: '.$class->getName().'#'.$fieldName

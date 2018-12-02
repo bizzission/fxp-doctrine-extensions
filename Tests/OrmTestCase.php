@@ -133,7 +133,7 @@ class OrmTestCase extends TestCase
             ];
         }
 
-        if (is_array($conn)) {
+        if (\is_array($conn)) {
             $conn = DriverManager::getConnection($conn, $config, $eventManager);
         }
 

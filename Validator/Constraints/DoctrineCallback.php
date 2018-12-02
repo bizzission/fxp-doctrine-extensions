@@ -31,7 +31,7 @@ class DoctrineCallback extends Constraint
      */
     public function __construct($options = null)
     {
-        if (is_array($options)) {
+        if (\is_array($options)) {
             $this->initArraySingleOption($options);
             $this->initArrayCallbackOption($options);
         }
@@ -64,7 +64,7 @@ class DoctrineCallback extends Constraint
      */
     protected function initArraySingleOption(array $options)
     {
-        if (1 === count($options) && isset($options['value'])) {
+        if (1 === \count($options) && isset($options['value'])) {
             $options = $options['value'];
         }
 
@@ -80,7 +80,7 @@ class DoctrineCallback extends Constraint
      */
     protected function initArrayCallbackOption($options)
     {
-        if (!isset($options['callback']) && !isset($options['groups']) && is_callable($options)) {
+        if (!isset($options['callback']) && !isset($options['groups']) && \is_callable($options)) {
             $options = ['callback' => $options];
         }
 

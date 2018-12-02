@@ -24,10 +24,11 @@
         "doctrine/cache": "^1.7.0",
         "doctrine/event-manager": "^1.0.0",
         "doctrine/reflection": "^1.0.0",
-        "symfony/http-kernel": "^4.1.0",
-        "symfony/event-dispatcher": "^4.1.0",
-        "symfony/doctrine-bridge": "^4.1.0",
-        "symfony/validator": "^4.1.0"
+        "symfony/http-kernel": "^4.2.0",
+        "symfony/event-dispatcher": "^4.2.0",
+        "symfony/doctrine-bridge": "^4.2.0",
+        "symfony/translation": "^4.2.0",
+        "symfony/validator": "^4.2.0"
     },
     "suggest": {
         "stof/doctrine-extensions-bundle": "For use some nice extensions for doctrine",
@@ -41,7 +42,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.1-dev"
         }
     }
 }

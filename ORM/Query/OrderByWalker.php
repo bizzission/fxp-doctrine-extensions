@@ -75,7 +75,7 @@ class OrderByWalker extends TreeWalkerAdapter
             $direction = $directions[$i];
 
             if (false !== $alias) {
-                if (!array_key_exists($alias, $components)) {
+                if (!\array_key_exists($alias, $components)) {
                     throw new \UnexpectedValueException("There is no component aliased by [{$alias}] in the given Query");
                 }
 
@@ -86,7 +86,7 @@ class OrderByWalker extends TreeWalkerAdapter
                     throw new \UnexpectedValueException("There is no such field [{$field}] in the given Query component, aliased by [$alias]");
                 }
             } else {
-                if (!array_key_exists($field, $components)) {
+                if (!\array_key_exists($field, $components)) {
                     throw new \UnexpectedValueException("There is no component field [{$field}] in the given Query");
                 }
             }

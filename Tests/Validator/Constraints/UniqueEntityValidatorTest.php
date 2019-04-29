@@ -21,6 +21,7 @@ use Fxp\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
 use Fxp\Component\DoctrineExtensions\Tests\Fixtures\FooFilter;
 use Fxp\Component\DoctrineExtensions\Validator\Constraints\UniqueEntity;
 use Fxp\Component\DoctrineExtensions\Validator\Constraints\UniqueEntityValidator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity;
@@ -506,8 +507,12 @@ class UniqueEntityValidatorTest extends TestCase
     {
         $uniqueFields = ['name'];
 
-        /* @var ManagerRegistry $registry */
+        /* @var ManagerRegistry|MockObject $registry */
         $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
+
+        $registry->expects($this->once())
+            ->method('getManagers')
+            ->willReturn([]);
 
         $constraint = new UniqueEntity([
             'fields' => $uniqueFields,

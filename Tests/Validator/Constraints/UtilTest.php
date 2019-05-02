@@ -19,8 +19,10 @@ use PHPUnit\Framework\TestCase;
  * Tests case for util.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class UtilTest extends TestCase
+final class UtilTest extends TestCase
 {
     public function getIdentifierTypes()
     {
@@ -39,20 +41,22 @@ class UtilTest extends TestCase
      * @dataProvider getIdentifierTypes
      *
      * @param string     $identifierType
-     * @param string|int $expected
+     * @param int|string $expected
      */
-    public function testFormatEmptyIdentifier($identifierType, $expected)
+    public function testFormatEmptyIdentifier($identifierType, $expected): void
     {
-        /* @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
+        /** @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
         $meta = $this->getMockBuilder(ClassMetadata::class)->getMock();
         $meta->expects($this->any())
             ->method('getIdentifier')
-            ->willReturn(['id']);
+            ->willReturn(['id'])
+        ;
 
         $meta->expects($this->any())
             ->method('getTypeOfField')
             ->with('id')
-            ->willReturn($identifierType);
+            ->willReturn($identifierType)
+        ;
 
         $this->assertSame($expected, Util::formatEmptyIdentifier($meta));
     }
@@ -61,9 +65,9 @@ class UtilTest extends TestCase
      * @dataProvider getIdentifierTypes
      *
      * @param string     $identifierType
-     * @param string|int $expected
+     * @param int|string $expected
      */
-    public function testGetFormattedIdentifier($identifierType, $expected)
+    public function testGetFormattedIdentifier($identifierType, $expected): void
     {
         $fieldName = 'single';
         $value = null;
@@ -71,16 +75,18 @@ class UtilTest extends TestCase
             $fieldName => new \stdClass(),
         ];
 
-        /* @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
+        /** @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
         $meta = $this->getMockBuilder(ClassMetadata::class)->getMock();
         $meta->expects($this->any())
             ->method('getIdentifier')
-            ->willReturn([$fieldName]);
+            ->willReturn([$fieldName])
+        ;
 
         $meta->expects($this->any())
             ->method('getTypeOfField')
             ->with($fieldName)
-            ->willReturn($identifierType);
+            ->willReturn($identifierType)
+        ;
 
         $this->assertSame($expected, Util::getFormattedIdentifier($meta, $criteria, $fieldName, $value));
     }

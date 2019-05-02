@@ -24,12 +24,12 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 class DriverMock implements Driver
 {
     /**
-     * @var \Doctrine\DBAL\Platforms\AbstractPlatform|null
+     * @var null|\Doctrine\DBAL\Platforms\AbstractPlatform
      */
     private $_platformMock;
 
     /**
-     * @var \Doctrine\DBAL\Schema\AbstractSchemaManager|null
+     * @var null|\Doctrine\DBAL\Schema\AbstractSchemaManager
      */
     private $_schemaManagerMock;
 
@@ -58,17 +58,17 @@ class DriverMock implements Driver
      */
     public function getSchemaManager(Connection $conn)
     {
-        if (null == $this->_schemaManagerMock) {
+        if (null === $this->_schemaManagerMock) {
             return new SchemaManagerMock($conn);
-        } else {
-            return $this->_schemaManagerMock;
         }
+
+        return $this->_schemaManagerMock;
     }
 
     /**
      * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
      */
-    public function setDatabasePlatform(AbstractPlatform $platform)
+    public function setDatabasePlatform(AbstractPlatform $platform): void
     {
         $this->_platformMock = $platform;
     }
@@ -76,7 +76,7 @@ class DriverMock implements Driver
     /**
      * @param \Doctrine\DBAL\Schema\AbstractSchemaManager $sm
      */
-    public function setSchemaManager(AbstractSchemaManager $sm)
+    public function setSchemaManager(AbstractSchemaManager $sm): void
     {
         $this->_schemaManagerMock = $sm;
     }
@@ -92,9 +92,8 @@ class DriverMock implements Driver
     /**
      * {@inheritdoc}
      */
-    public function getDatabase(Connection $conn)
+    public function getDatabase(Connection $conn): void
     {
-        return;
     }
 
     public function convertExceptionCode(\Exception $exception)

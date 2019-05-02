@@ -31,7 +31,7 @@ class Util
      * @param ClassMetadata   $relatedClass The metadata of related class
      * @param array           $criteria     The validator criteria
      * @param string          $fieldName    The field name
-     * @param int|string|null $value        The identifier value
+     * @param null|int|string $value        The identifier value
      *
      * @return int|string
      */
@@ -76,10 +76,10 @@ class Util
      * @param object          $entity
      * @param Constraint      $constraint
      *
-     * @return ObjectManager
-     *
      * @throws UnexpectedTypeException
      * @throws ConstraintDefinitionException
+     *
+     * @return ObjectManager
      */
     public static function getObjectManager(ManagerRegistry $registry, $entity, Constraint $constraint)
     {
@@ -95,7 +95,7 @@ class Util
      * @throws UnexpectedTypeException
      * @throws ConstraintDefinitionException
      */
-    private static function validateConstraint(Constraint $constraint)
+    private static function validateConstraint(Constraint $constraint): void
     {
         if (!$constraint instanceof UniqueEntity) {
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\UniqueEntity');
@@ -119,9 +119,9 @@ class Util
      * @param object          $entity
      * @param UniqueEntity    $constraint
      *
-     * @return ObjectManager
-     *
      * @throws ConstraintDefinitionException
+     *
+     * @return ObjectManager
      */
     private static function findObjectManager(ManagerRegistry $registry, $entity, UniqueEntity $constraint)
     {

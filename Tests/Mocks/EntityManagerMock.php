@@ -23,12 +23,12 @@ use Doctrine\ORM\EntityManager;
 class EntityManagerMock extends EntityManager
 {
     /**
-     * @var \Doctrine\ORM\UnitOfWork|null
+     * @var null|\Doctrine\ORM\UnitOfWork
      */
     private $_uowMock;
 
     /**
-     * @var \Doctrine\ORM\Proxy\ProxyFactory|null
+     * @var null|\Doctrine\ORM\Proxy\ProxyFactory
      */
     private $_proxyFactoryMock;
 
@@ -47,7 +47,7 @@ class EntityManagerMock extends EntityManager
      *
      * @param \Doctrine\ORM\UnitOfWork $uow
      */
-    public function setUnitOfWork($uow)
+    public function setUnitOfWork($uow): void
     {
         $this->_uowMock = $uow;
     }
@@ -55,7 +55,7 @@ class EntityManagerMock extends EntityManager
     /**
      * @param \Doctrine\ORM\Proxy\ProxyFactory $proxyFactory
      */
-    public function setProxyFactory($proxyFactory)
+    public function setProxyFactory($proxyFactory): void
     {
         $this->_proxyFactoryMock = $proxyFactory;
     }

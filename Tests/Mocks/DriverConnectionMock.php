@@ -36,7 +36,7 @@ class DriverConnectionMock implements Connection
     /**
      * @param \Doctrine\DBAL\Driver\Statement $statementMock
      */
-    public function setStatementMock($statementMock)
+    public function setStatementMock($statementMock): void
     {
         $this->statementMock = $statementMock;
     }
@@ -60,56 +60,56 @@ class DriverConnectionMock implements Connection
     /**
      * {@inheritdoc}
      */
-    public function quote($input, $type = \PDO::PARAM_STR)
+    public function quote($input, $type = \PDO::PARAM_STR): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function exec($statement)
+    public function exec($statement): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId($name = null): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function beginTransaction()
+    public function beginTransaction(): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function commit()
+    public function commit(): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rollBack()
+    public function rollBack(): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function errorCode()
+    public function errorCode(): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function errorInfo()
+    public function errorInfo(): void
     {
     }
 }

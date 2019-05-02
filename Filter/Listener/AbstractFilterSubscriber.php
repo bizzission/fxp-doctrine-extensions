@@ -62,7 +62,7 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
      *
      * @param Event $event The event
      */
-    public function onEvent(Event $event)
+    public function onEvent(Event $event): void
     {
         if (!$event instanceof GetResponseEvent || !$this->injected) {
             if (null !== ($filter = $this->getFilter())) {
@@ -74,7 +74,7 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
     /**
      * Get the supported filter.
      *
-     * @return SQLFilter|null
+     * @return null|SQLFilter
      */
     protected function getFilter()
     {
@@ -85,6 +85,7 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
         foreach ($filters as $name => $filter) {
             if ($filter instanceof $supports) {
                 $fFilter = $filter;
+
                 break;
             }
         }

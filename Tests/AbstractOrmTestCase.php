@@ -25,23 +25,11 @@ use PHPUnit\Framework\TestCase;
  * Tests case for orm.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class OrmTestCase extends TestCase
+abstract class AbstractOrmTestCase extends TestCase
 {
-    /**
-     * The metadata cache that is shared between all ORM tests (except functional tests).
-     *
-     * @var \Doctrine\Common\Cache\Cache|null
-     */
-    private static $_metadataCacheImpl = null;
-
-    /**
-     * The query cache that is shared between all ORM tests (except functional tests).
-     *
-     * @var \Doctrine\Common\Cache\Cache|null
-     */
-    private static $_queryCacheImpl = null;
-
     /**
      * @var bool
      */
@@ -53,9 +41,22 @@ class OrmTestCase extends TestCase
     protected $secondLevelCacheFactory;
 
     /**
-     * @var \Doctrine\Common\Cache\Cache|null
+     * @var null|\Doctrine\Common\Cache\Cache
      */
-    protected $secondLevelCacheDriverImpl = null;
+    protected $secondLevelCacheDriverImpl;
+    /**
+     * The metadata cache that is shared between all ORM tests (except functional tests).
+     *
+     * @var null|\Doctrine\Common\Cache\Cache
+     */
+    private static $_metadataCacheImpl = null;
+
+    /**
+     * The query cache that is shared between all ORM tests (except functional tests).
+     *
+     * @var null|\Doctrine\Common\Cache\Cache
+     */
+    private static $_queryCacheImpl = null;
 
     /**
      * @param array $paths
@@ -88,8 +89,8 @@ class OrmTestCase extends TestCase
      * be configured in the tests to simulate the DBAL behavior that is desired
      * for a particular test,
      *
-     * @param \Doctrine\DBAL\Connection|array    $conn
-     * @param \Doctrine\Common\EventManager|null $eventManager
+     * @param array|\Doctrine\DBAL\Connection    $conn
+     * @param null|\Doctrine\Common\EventManager $eventManager
      * @param bool                               $withSharedMetadata
      *
      * @return \Doctrine\ORM\EntityManager
@@ -110,7 +111,9 @@ class OrmTestCase extends TestCase
         $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver(
             [
                 realpath(__DIR__.'/Models'),
-            ], true));
+            ],
+            true
+        ));
 
         if ($this->isSecondLevelCacheEnabled) {
             $cacheConfig = new CacheConfiguration();
@@ -143,6 +146,18 @@ class OrmTestCase extends TestCase
     /**
      * @return \Doctrine\Common\Cache\Cache
      */
+    protected function getSharedSecondLevelCacheDriverImpl()
+    {
+        if (null === $this->secondLevelCacheDriverImpl) {
+            $this->secondLevelCacheDriverImpl = new ArrayCache();
+        }
+
+        return $this->secondLevelCacheDriverImpl;
+    }
+
+    /**
+     * @return \Doctrine\Common\Cache\Cache
+     */
     private static function getSharedMetadataCacheImpl()
     {
         if (null === self::$_metadataCacheImpl) {
@@ -162,17 +177,5 @@ class OrmTestCase extends TestCase
         }
 
         return self::$_queryCacheImpl;
-    }
-
-    /**
-     * @return \Doctrine\Common\Cache\Cache
-     */
-    protected function getSharedSecondLevelCacheDriverImpl()
-    {
-        if (null === $this->secondLevelCacheDriverImpl) {
-            $this->secondLevelCacheDriverImpl = new ArrayCache();
-        }
-
-        return $this->secondLevelCacheDriverImpl;
     }
 }

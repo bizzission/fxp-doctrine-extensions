@@ -63,49 +63,42 @@ class DatabasePlatformMock extends AbstractPlatform
     /**
      * {@inheritdoc}
      */
-    public function getBooleanTypeDeclarationSQL(array $field)
+    public function getBooleanTypeDeclarationSQL(array $field): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getIntegerTypeDeclarationSQL(array $field)
+    public function getIntegerTypeDeclarationSQL(array $field): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBigIntTypeDeclarationSQL(array $field)
+    public function getBigIntTypeDeclarationSQL(array $field): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSmallIntTypeDeclarationSQL(array $field)
+    public function getSmallIntTypeDeclarationSQL(array $field): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef)
+    public function getVarcharTypeDeclarationSQL(array $field): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getVarcharTypeDeclarationSQL(array $field)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClobTypeDeclarationSQL(array $field)
+    public function getClobTypeDeclarationSQL(array $field): void
     {
     }
 
@@ -114,7 +107,7 @@ class DatabasePlatformMock extends AbstractPlatform
     /**
      * @param bool $bool
      */
-    public function setPrefersIdentityColumns($bool)
+    public function setPrefersIdentityColumns($bool): void
     {
         $this->_prefersIdentityColumns = $bool;
     }
@@ -122,7 +115,7 @@ class DatabasePlatformMock extends AbstractPlatform
     /**
      * @param bool $bool
      */
-    public function setPrefersSequences($bool)
+    public function setPrefersSequences($bool): void
     {
         $this->_prefersSequences = $bool;
     }
@@ -130,7 +123,7 @@ class DatabasePlatformMock extends AbstractPlatform
     /**
      * @param string $sql
      */
-    public function setSequenceNextValSql($sql)
+    public function setSequenceNextValSql($sql): void
     {
         $this->_sequenceNextValSql = $sql;
     }
@@ -146,15 +139,22 @@ class DatabasePlatformMock extends AbstractPlatform
     /**
      * {@inheritdoc}
      */
-    protected function initializeDoctrineTypeMappings()
+    public function getBlobTypeDeclarationSQL(array $field): void
+    {
+        throw DBALException::notSupported(__METHOD__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBlobTypeDeclarationSQL(array $field)
+    protected function initializeDoctrineTypeMappings(): void
     {
-        throw DBALException::notSupported(__METHOD__);
     }
 }

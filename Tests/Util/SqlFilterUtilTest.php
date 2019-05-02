@@ -22,8 +22,10 @@ use PHPUnit\Framework\TestCase;
  * Tests case for abstract sql filter.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class SqlFilterUtilTest extends TestCase
+final class SqlFilterUtilTest extends TestCase
 {
     /**
      * @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -35,19 +37,20 @@ class SqlFilterUtilTest extends TestCase
      */
     protected $filterCollection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->em = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
         $this->filterCollection = $this->getMockBuilder(FilterCollection::class)->disableOriginalConstructor()->getMock();
 
         $this->em->expects($this->once())
             ->method('getFilters')
-            ->willReturn($this->filterCollection);
+            ->willReturn($this->filterCollection)
+        ;
     }
 
-    public function testGetEnabledFilters()
+    public function testGetEnabledFilters(): void
     {
-        /* @var SQLFilter|\PHPUnit_Framework_MockObject_MockObject $filter */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|SQLFilter $filter */
         $filter = $this->getMockForAbstractClass(SQLFilter::class, [$this->em]);
         $barFilter = new BarFilter($this->em);
         $barFilter->disable();
@@ -59,22 +62,24 @@ class SqlFilterUtilTest extends TestCase
             ->method('getEnabledFilters')
             ->willReturn(array_merge($expected, [
                 'bar' => $barFilter,
-            ]));
+            ]))
+        ;
 
         $this->assertEquals($expected, SqlFilterUtil::getEnabledFilters($this->em));
     }
 
-    public function testIsEnabledWithDisabledSqlFilter()
+    public function testIsEnabledWithDisabledSqlFilter(): void
     {
         $this->filterCollection->expects($this->once())
             ->method('isEnabled')
             ->with('foo')
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $this->assertFalse(SqlFilterUtil::isEnabled($this->em, 'foo'));
     }
 
-    public function testIsEnabledWithDisabledEnableSqlFilter()
+    public function testIsEnabledWithDisabledEnableSqlFilter(): void
     {
         $barFilter = new BarFilter($this->em);
         $barFilter->disable();
@@ -82,27 +87,31 @@ class SqlFilterUtilTest extends TestCase
         $this->filterCollection->expects($this->once())
             ->method('isEnabled')
             ->with('bar')
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $this->filterCollection->expects($this->once())
             ->method('getFilter')
-            ->willReturn($barFilter);
+            ->willReturn($barFilter)
+        ;
 
         $this->assertFalse(SqlFilterUtil::isEnabled($this->em, 'bar'));
     }
 
-    public function testIsEnabledWithEnabledEnableSqlFilter()
+    public function testIsEnabledWithEnabledEnableSqlFilter(): void
     {
         $barFilter = new BarFilter($this->em);
 
         $this->filterCollection->expects($this->once())
             ->method('isEnabled')
             ->with('bar')
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $this->filterCollection->expects($this->once())
             ->method('getFilter')
-            ->willReturn($barFilter);
+            ->willReturn($barFilter)
+        ;
 
         $this->assertTrue(SqlFilterUtil::isEnabled($this->em, 'bar'));
     }

@@ -27,12 +27,12 @@ class ConnectionMock extends Connection
     private $_fetchOneResult;
 
     /**
-     * @var \Exception|null
+     * @var null|\Exception
      */
     private $_fetchOneException;
 
     /**
-     * @var Statement|null
+     * @var null|Statement
      */
     private $_queryResult;
 
@@ -59,8 +59,8 @@ class ConnectionMock extends Connection
     /**
      * @param array                              $params
      * @param \Doctrine\DBAL\Driver              $driver
-     * @param \Doctrine\DBAL\Configuration|null  $config
-     * @param \Doctrine\Common\EventManager|null $eventManager
+     * @param null|\Doctrine\DBAL\Configuration  $config
+     * @param null|\Doctrine\Common\EventManager $eventManager
      */
     public function __construct(array $params, $driver, $config = null, $eventManager = null)
     {
@@ -83,7 +83,7 @@ class ConnectionMock extends Connection
     /**
      * {@inheritdoc}
      */
-    public function insert($tableName, array $data, array $types = [])
+    public function insert($tableName, array $data, array $types = []): void
     {
         $this->_inserts[$tableName][] = $data;
     }
@@ -91,7 +91,7 @@ class ConnectionMock extends Connection
     /**
      * {@inheritdoc}
      */
-    public function executeUpdate($query, array $params = [], array $types = [])
+    public function executeUpdate($query, array $params = [], array $types = []): void
     {
         $this->_executeUpdates[] = ['query' => $query, 'params' => $params, 'types' => $types];
     }
@@ -141,15 +141,15 @@ class ConnectionMock extends Connection
     /**
      * @param mixed $fetchOneResult
      */
-    public function setFetchOneResult($fetchOneResult)
+    public function setFetchOneResult($fetchOneResult): void
     {
         $this->_fetchOneResult = $fetchOneResult;
     }
 
     /**
-     * @param \Exception|null $exception
+     * @param null|\Exception $exception
      */
-    public function setFetchOneException(\Exception $exception = null)
+    public function setFetchOneException(\Exception $exception = null): void
     {
         $this->_fetchOneException = $exception;
     }
@@ -157,7 +157,7 @@ class ConnectionMock extends Connection
     /**
      * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
      */
-    public function setDatabasePlatform($platform)
+    public function setDatabasePlatform($platform): void
     {
         $this->_platformMock = $platform;
     }
@@ -165,7 +165,7 @@ class ConnectionMock extends Connection
     /**
      * @param int $id
      */
-    public function setLastInsertId($id)
+    public function setLastInsertId($id): void
     {
         $this->_lastInsertId = $id;
     }
@@ -173,7 +173,7 @@ class ConnectionMock extends Connection
     /**
      * @param Statement $result
      */
-    public function setQueryResult(Statement $result)
+    public function setQueryResult(Statement $result): void
     {
         $this->_queryResult = $result;
     }
@@ -194,7 +194,7 @@ class ConnectionMock extends Connection
         return $this->_executeUpdates;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->_inserts = [];
         $this->_lastInsertId = 0;

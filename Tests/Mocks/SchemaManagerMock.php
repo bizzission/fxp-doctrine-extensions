@@ -32,7 +32,7 @@ class SchemaManagerMock extends AbstractSchemaManager
     /**
      * {@inheritdoc}
      */
-    protected function _getPortableTableColumnDefinition($tableColumn)
+    protected function _getPortableTableColumnDefinition($tableColumn): void
     {
     }
 }

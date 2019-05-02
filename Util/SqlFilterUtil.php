@@ -24,7 +24,7 @@ class SqlFilterUtil
     /**
      * Get the list of SQL Filter name must to be disabled.
      *
-     * @param ObjectManager|null $om      The object manager instance
+     * @param null|ObjectManager $om      The object manager instance
      * @param string[]           $filters The list of SQL Filter
      * @param bool               $all     Force all SQL Filter
      *
@@ -45,7 +45,7 @@ class SqlFilterUtil
     /**
      * Get the enabled sql filters.
      *
-     * @param ObjectManager|null $om The object manager instance
+     * @param null|ObjectManager $om The object manager instance
      *
      * @return SQLFilter[]
      */
@@ -70,10 +70,10 @@ class SqlFilterUtil
     /**
      * Enable the SQL Filters.
      *
-     * @param ObjectManager|null $om      The object manager instance
+     * @param null|ObjectManager $om      The object manager instance
      * @param string[]           $filters The list of SQL Filter
      */
-    public static function enableFilters($om, array $filters)
+    public static function enableFilters($om, array $filters): void
     {
         static::actionFilters($om, 'enable', $filters);
     }
@@ -81,10 +81,10 @@ class SqlFilterUtil
     /**
      * Disable the SQL Filters.
      *
-     * @param ObjectManager|null $om      The object manager instance
+     * @param null|ObjectManager $om      The object manager instance
      * @param string[]           $filters The list of SQL Filter
      */
-    public static function disableFilters($om, array $filters)
+    public static function disableFilters($om, array $filters): void
     {
         static::actionFilters($om, 'disable', $filters);
     }
@@ -92,7 +92,7 @@ class SqlFilterUtil
     /**
      * Check if the filter is enabled.
      *
-     * @param ObjectManager|null $om   The object manager instance
+     * @param null|ObjectManager $om   The object manager instance
      * @param string             $name The filter name
      *
      * @return bool
@@ -127,7 +127,7 @@ class SqlFilterUtil
         $reactivateFilters = [];
 
         foreach ($enabledFilters as $name => $filter) {
-            if (\in_array($name, $filters) || $all) {
+            if (\in_array($name, $filters, true) || $all) {
                 $reactivateFilters[] = $name;
             }
         }
@@ -138,11 +138,11 @@ class SqlFilterUtil
     /**
      * Disable/Enable the SQL Filters.
      *
-     * @param ObjectManager|null $om      The object manager instance
+     * @param null|ObjectManager $om      The object manager instance
      * @param string             $action  The value (disable|enable)
      * @param string[]           $filters The list of SQL Filter
      */
-    protected static function actionFilters($om, $action, array $filters)
+    protected static function actionFilters($om, $action, array $filters): void
     {
         if ($om instanceof EntityManagerInterface) {
             $sqlFilters = $om->getFilters();
@@ -150,9 +150,9 @@ class SqlFilterUtil
             foreach ($filters as $name) {
                 if ($sqlFilters->isEnabled($name)
                         && ($filter = $sqlFilters->getFilter($name)) instanceof EnableFilterInterface) {
-                    $filter->$action();
+                    $filter->{$action}();
                 } else {
-                    $sqlFilters->$action($name);
+                    $sqlFilters->{$action}($name);
                 }
             }
         }

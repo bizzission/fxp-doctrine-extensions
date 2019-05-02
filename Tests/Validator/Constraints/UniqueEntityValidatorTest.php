@@ -41,28 +41,428 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
  * Tests case for unique entity validator.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class UniqueEntityValidatorTest extends TestCase
+final class UniqueEntityValidatorTest extends TestCase
 {
+    public function testConstraintIsNotUniqueEntity(): void
+    {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException::class);
+
+        /** @var ManagerRegistry $registry */
+        /** @var Constraint $constraint */
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $registry = $this->createRegistryMock($entityManagerName, $em);
+        $validator = new UniqueEntityValidator($registry);
+        $constraint = $this->getMockForAbstractClass(Constraint::class);
+        $entity = new SingleIntIdEntity(1, 'Foo');
+
+        $validator->validate($entity, $constraint);
+    }
+
+    public function testConstraintWrongFieldType(): void
+    {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException::class);
+
+        /** @var ManagerRegistry $registry */
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $registry = $this->createRegistryMock($entityManagerName, $em);
+        $validator = new UniqueEntityValidator($registry);
+        $constraint = new UniqueEntity(['fields' => 42]);
+        $entity = new SingleIntIdEntity(1, 'Foo');
+
+        $validator->validate($entity, $constraint);
+    }
+
+    public function testConstraintWrongErrorPath(): void
+    {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException::class);
+
+        /** @var ManagerRegistry $registry */
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $registry = $this->createRegistryMock($entityManagerName, $em);
+        $validator = new UniqueEntityValidator($registry);
+        $constraint = new UniqueEntity(['fields' => 'name', 'errorPath' => 42]);
+        $entity = new SingleIntIdEntity(1, 'Foo');
+
+        $validator->validate($entity, $constraint);
+    }
+
+    public function testConstraintHasNotField(): void
+    {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException::class);
+
+        /** @var ManagerRegistry $registry */
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $registry = $this->createRegistryMock($entityManagerName, $em);
+        $validator = new UniqueEntityValidator($registry);
+        $constraint = new UniqueEntity(['fields' => 'name']);
+        $constraint->fields = [];
+        $entity = new SingleIntIdEntity(1, 'Foo');
+
+        $validator->validate($entity, $constraint);
+    }
+
+    public function testConstraintHasNotExistingField(): void
+    {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException::class);
+
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em, null, '42');
+        $entity1 = new SingleIntIdEntity(1, 'Foo');
+
+        $validator->validate($entity1);
+    }
+
+    public function testValidateUniqueness(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em);
+
+        $entity1 = new SingleIntIdEntity(1, 'Foo');
+        $violationsList = $validator->validate($entity1);
+        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity before it is saved to the database.');
+
+        $em->persist($entity1);
+        $em->flush();
+
+        $violationsList = $validator->validate($entity1);
+        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity after it was saved to the database.');
+
+        $entity2 = new SingleIntIdEntity(2, 'Foo');
+
+        $violationsList = $validator->validate($entity2);
+        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
+
+        /** @var ConstraintViolationInterface $violation */
+        $violation = $violationsList[0];
+        $this->assertEquals('This value is already used.', $violation->getMessage());
+        $this->assertEquals('name', $violation->getPropertyPath());
+        $this->assertEquals('Foo', $violation->getInvalidValue());
+    }
+
+    public function testValidateCustomErrorPath(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em, null, null, 'bar');
+
+        $entity1 = new SingleIntIdEntity(1, 'Foo');
+
+        $em->persist($entity1);
+        $em->flush();
+
+        $entity2 = new SingleIntIdEntity(2, 'Foo');
+
+        $violationsList = $validator->validate($entity2);
+        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
+
+        /** @var ConstraintViolationInterface $violation */
+        $violation = $violationsList[0];
+        $this->assertEquals('This value is already used.', $violation->getMessage());
+        $this->assertEquals('bar', $violation->getPropertyPath());
+        $this->assertEquals('Foo', $violation->getInvalidValue());
+    }
+
+    public function testValidateUniquenessWithNull(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em);
+
+        $entity1 = new SingleIntIdEntity(1, null);
+        $entity2 = new SingleIntIdEntity(2, null);
+
+        $em->persist($entity1);
+        $em->persist($entity2);
+        $em->flush();
+
+        $violationsList = $validator->validate($entity1);
+        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity having a null value.');
+    }
+
+    public function testValidateUniquenessWithIgnoreNull(): void
+    {
+        $entityManagerName = 'foo';
+        $validateClass = DoubleNameEntity::class;
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em, $validateClass, ['name', 'name2'], 'bar', 'findby', false);
+
+        $entity1 = new DoubleNameEntity(1, 'Foo', null);
+        $violationsList = $validator->validate($entity1);
+        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity before it is saved to the database.');
+
+        $em->persist($entity1);
+        $em->flush();
+
+        $violationsList = $validator->validate($entity1);
+        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity after it was saved to the database.');
+
+        $entity2 = new DoubleNameEntity(2, 'Foo', null);
+
+        $violationsList = $validator->validate($entity2);
+        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
+
+        /** @var ConstraintViolationInterface $violation */
+        $violation = $violationsList[0];
+        $this->assertEquals('This value is already used.', $violation->getMessage());
+        $this->assertEquals('bar', $violation->getPropertyPath());
+        $this->assertEquals('Foo', $violation->getInvalidValue());
+    }
+
+    public function testValidateUniquenessAfterConsideringMultipleQueryResults(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em);
+
+        $entity1 = new SingleIntIdEntity(1, 'foo');
+        $entity2 = new SingleIntIdEntity(2, 'foo');
+
+        $em->persist($entity1);
+        $em->persist($entity2);
+        $em->flush();
+
+        $violationsList = $validator->validate($entity1);
+        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
+
+        $violationsList = $validator->validate($entity2);
+        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
+    }
+
+    public function testValidateUniquenessUsingCustomRepositoryMethod(): void
+    {
+        $entityManagerName = 'foo';
+        $repository = $this->createRepositoryMock();
+        $repository->expects($this->once())
+            ->method('findByCustom')
+            ->will($this->returnValue([]))
+        ;
+        $em = $this->createEntityManagerMock($repository);
+        $validator = $this->createValidator($entityManagerName, $em, null, [], null, 'findByCustom');
+
+        $entity1 = new SingleIntIdEntity(1, 'foo');
+
+        $violationsList = $validator->validate($entity1);
+        $this->assertEquals(0, $violationsList->count(), 'Violation is using custom repository method.');
+    }
+
+    public function testValidateUniquenessWithUnrewoundArray(): void
+    {
+        $entity = new SingleIntIdEntity(1, 'foo');
+
+        $entityManagerName = 'foo';
+        $repository = $this->createRepositoryMock();
+        $repository->expects($this->once())
+            ->method('findByCustom')
+            ->will(
+                $this->returnCallback(function () use ($entity) {
+                    $returnValue = [
+                        $entity,
+                    ];
+                    next($returnValue);
+
+                    return $returnValue;
+                })
+            )
+        ;
+        $em = $this->createEntityManagerMock($repository);
+        $validator = $this->createValidator($entityManagerName, $em, null, [], null, 'findByCustom');
+
+        $violationsList = $validator->validate($entity);
+        $this->assertCount(0, $violationsList, 'Violation is using unrewound array as return value in the repository method.');
+    }
+
+    public function testAssociatedEntity(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['single']);
+
+        $entity1 = new SingleIntIdEntity(1, 'foo');
+        $associated = new AssociationEntity();
+        $associated->single = $entity1;
+
+        $em->persist($entity1);
+        $em->persist($associated);
+        $em->flush();
+
+        $violationsList = $validator->validate($associated);
+        $this->assertEquals(0, $violationsList->count());
+
+        $associated2 = new AssociationEntity();
+        $associated2->single = $entity1;
+
+        $em->persist($associated2);
+        $em->flush();
+
+        $violationsList = $validator->validate($associated2);
+        $this->assertEquals(1, $violationsList->count());
+    }
+
+    public function testAssociatedEntityWithNull(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['single'], null, 'findBy', false);
+
+        $associated = new AssociationEntity();
+        $associated->single = null;
+
+        $em->persist($associated);
+        $em->flush();
+
+        $violationsList = $validator->validate($associated);
+        $this->assertEquals(0, $violationsList->count());
+    }
+
+    public function testAssociatedCompositeEntity(): void
+    {
+        $this->expectException(\Symfony\Component\Validator\Exception\ConstraintDefinitionException::class);
+        $this->expectExceptionMessage('Associated entities are not allowed to have more than one identifier field');
+
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['composite']);
+
+        $composite = new CompositeIntIdEntity(1, 1, 'test');
+        $associated = new AssociationEntity();
+        $associated->composite = $composite;
+
+        $em->persist($composite);
+        $em->persist($associated);
+        $em->flush();
+
+        $validator->validate($associated);
+    }
+
+    public function testDedicatedEntityManagerNullObject(): void
+    {
+        $this->expectException(\Symfony\Component\Validator\Exception\ConstraintDefinitionException::class);
+        $this->expectExceptionMessage('Object manager "foo" does not exist.');
+
+        $uniqueFields = ['name'];
+        $entityManagerName = 'foo';
+
+        /** @var ManagerRegistry $registry */
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
+
+        $constraint = new UniqueEntity([
+            'fields' => $uniqueFields,
+            'em' => $entityManagerName,
+        ]);
+
+        $uniqueValidator = new UniqueEntityValidator($registry);
+
+        $entity = new SingleIntIdEntity(1, null);
+
+        $uniqueValidator->validate($entity, $constraint);
+    }
+
+    public function testEntityManagerNullObject(): void
+    {
+        $this->expectException(\Symfony\Component\Validator\Exception\ConstraintDefinitionException::class);
+        $this->expectExceptionMessage('Unable to find the object manager associated with an entity of class "Symfony\\Bridge\\Doctrine\\Tests\\Fixtures\\SingleIntIdEntity"');
+
+        $uniqueFields = ['name'];
+
+        /** @var ManagerRegistry|MockObject $registry */
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
+
+        $registry->expects($this->once())
+            ->method('getManagers')
+            ->willReturn([])
+        ;
+
+        $constraint = new UniqueEntity([
+            'fields' => $uniqueFields,
+        ]);
+
+        $uniqueValidator = new UniqueEntityValidator($registry);
+
+        $entity = new SingleIntIdEntity(1, null);
+
+        $uniqueValidator->validate($entity, $constraint);
+    }
+
+    public function testDisableAllFilterAndReactivateAfter(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
+        $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
+        $em->getConfiguration()->addFilter('barFilter1', BarFilter::class);
+        $em->getFilters()->enable('fooFilter1');
+        $em->getFilters()->enable('fooFilter2');
+        $em->getFilters()->enable('barFilter1');
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em);
+        $entity1 = new SingleIntIdEntity(1, 'Foo');
+
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
+
+        $violationsList = $validator->validate($entity1);
+
+        $this->assertEquals(0, $violationsList->count());
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
+    }
+
+    public function testDisableOneFilterAndReactivateAfter(): void
+    {
+        $entityManagerName = 'foo';
+        $em = DoctrineTestHelper::createTestEntityManager();
+        $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
+        $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
+        $em->getConfiguration()->addFilter('barFilter1', BarFilter::class);
+        $em->getFilters()->enable('fooFilter1');
+        $em->getFilters()->enable('fooFilter2');
+        $em->getFilters()->enable('barFilter1');
+        $this->createSchema($em);
+        $validator = $this->createValidator($entityManagerName, $em, null, null, null, 'findBy', true, ['fooFilter1'], false);
+        $entity1 = new SingleIntIdEntity(1, 'Foo');
+
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
+
+        $violationsList = $validator->validate($entity1);
+
+        $this->assertEquals(0, $violationsList->count());
+        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
+    }
+
     protected function createRegistryMock($entityManagerName, $em)
     {
         $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
         $registry->expects($this->any())
             ->method('getManager')
             ->with($this->equalTo($entityManagerName))
-            ->will($this->returnValue($em));
+            ->will($this->returnValue($em))
+        ;
 
         return $registry;
     }
 
     protected function createRepositoryMock()
     {
-        $repository = $this->getMockBuilder(ObjectRepository::class)
+        return $this->getMockBuilder(ObjectRepository::class)
             ->setMethods(['findByCustom', 'find', 'findAll', 'findOneBy', 'findBy', 'getClassName'])
             ->getMock()
         ;
-
-        return $repository;
     }
 
     protected function createEntityManagerMock($repositoryMock)
@@ -107,7 +507,8 @@ class UniqueEntityValidatorTest extends TestCase
         $validatorFactory->expects($this->any())
             ->method('getInstance')
             ->with($this->isInstanceOf(UniqueEntity::class))
-            ->will($this->returnValue($uniqueValidator));
+            ->will($this->returnValue($uniqueValidator))
+        ;
 
         return $validatorFactory;
     }
@@ -121,7 +522,7 @@ class UniqueEntityValidatorTest extends TestCase
             $uniqueFields = ['name'];
         }
 
-        /* @var ManagerRegistry $registry */
+        /** @var ManagerRegistry $registry */
         $registry = $this->createRegistryMock($entityManagerName, $em);
 
         $uniqueValidator = new UniqueEntityValidator($registry);
@@ -140,432 +541,22 @@ class UniqueEntityValidatorTest extends TestCase
 
         $metadataFactory = new FakeMetadataFactory();
         $metadataFactory->addMetadata($metadata);
-        /* @var ConstraintValidatorFactoryInterface $validatorFactory */
+        /** @var ConstraintValidatorFactoryInterface $validatorFactory */
         $validatorFactory = $this->createValidatorFactory($uniqueValidator);
         $contextFactory = new ExecutionContextFactory(new IdentityTranslator(), null);
 
         return new RecursiveValidator($contextFactory, $metadataFactory, $validatorFactory, []);
     }
 
-    protected function createSchema($em)
+    protected function createSchema($em): void
     {
-        /* @var EntityManagerInterface $em */
+        /** @var EntityManagerInterface $em */
         $schemaTool = new SchemaTool($em);
         $schemaTool->createSchema([
-                $em->getClassMetadata(SingleIntIdEntity::class),
-                $em->getClassMetadata(DoubleNameEntity::class),
-                $em->getClassMetadata(CompositeIntIdEntity::class),
-                $em->getClassMetadata(AssociationEntity::class),
-            ]);
-    }
-
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
-     */
-    public function testConstraintIsNotUniqueEntity()
-    {
-        /* @var ManagerRegistry $registry */
-        /* @var Constraint $constraint */
-
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $registry = $this->createRegistryMock($entityManagerName, $em);
-        $validator = new UniqueEntityValidator($registry);
-        $constraint = $this->getMockForAbstractClass(Constraint::class);
-        $entity = new SingleIntIdEntity(1, 'Foo');
-
-        $validator->validate($entity, $constraint);
-    }
-
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
-     */
-    public function testConstraintWrongFieldType()
-    {
-        /* @var ManagerRegistry $registry */
-
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $registry = $this->createRegistryMock($entityManagerName, $em);
-        $validator = new UniqueEntityValidator($registry);
-        $constraint = new UniqueEntity(['fields' => 42]);
-        $entity = new SingleIntIdEntity(1, 'Foo');
-
-        $validator->validate($entity, $constraint);
-    }
-
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
-     */
-    public function testConstraintWrongErrorPath()
-    {
-        /* @var ManagerRegistry $registry */
-
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $registry = $this->createRegistryMock($entityManagerName, $em);
-        $validator = new UniqueEntityValidator($registry);
-        $constraint = new UniqueEntity(['fields' => 'name', 'errorPath' => 42]);
-        $entity = new SingleIntIdEntity(1, 'Foo');
-
-        $validator->validate($entity, $constraint);
-    }
-
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
-     */
-    public function testConstraintHasNotField()
-    {
-        /* @var ManagerRegistry $registry */
-
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $registry = $this->createRegistryMock($entityManagerName, $em);
-        $validator = new UniqueEntityValidator($registry);
-        $constraint = new UniqueEntity(['fields' => 'name']);
-        $constraint->fields = [];
-        $entity = new SingleIntIdEntity(1, 'Foo');
-
-        $validator->validate($entity, $constraint);
-    }
-
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
-     */
-    public function testConstraintHasNotExistingField()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, null, '42');
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-
-        $validator->validate($entity1);
-    }
-
-    public function testValidateUniqueness()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em);
-
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-        $violationsList = $validator->validate($entity1);
-        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity before it is saved to the database.');
-
-        $em->persist($entity1);
-        $em->flush();
-
-        $violationsList = $validator->validate($entity1);
-        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity after it was saved to the database.');
-
-        $entity2 = new SingleIntIdEntity(2, 'Foo');
-
-        $violationsList = $validator->validate($entity2);
-        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
-
-        /* @var ConstraintViolationInterface $violation */
-        $violation = $violationsList[0];
-        $this->assertEquals('This value is already used.', $violation->getMessage());
-        $this->assertEquals('name', $violation->getPropertyPath());
-        $this->assertEquals('Foo', $violation->getInvalidValue());
-    }
-
-    public function testValidateCustomErrorPath()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, null, null, 'bar');
-
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-
-        $em->persist($entity1);
-        $em->flush();
-
-        $entity2 = new SingleIntIdEntity(2, 'Foo');
-
-        $violationsList = $validator->validate($entity2);
-        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
-
-        /* @var ConstraintViolationInterface $violation */
-        $violation = $violationsList[0];
-        $this->assertEquals('This value is already used.', $violation->getMessage());
-        $this->assertEquals('bar', $violation->getPropertyPath());
-        $this->assertEquals('Foo', $violation->getInvalidValue());
-    }
-
-    public function testValidateUniquenessWithNull()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em);
-
-        $entity1 = new SingleIntIdEntity(1, null);
-        $entity2 = new SingleIntIdEntity(2, null);
-
-        $em->persist($entity1);
-        $em->persist($entity2);
-        $em->flush();
-
-        $violationsList = $validator->validate($entity1);
-        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity having a null value.');
-    }
-
-    public function testValidateUniquenessWithIgnoreNull()
-    {
-        $entityManagerName = 'foo';
-        $validateClass = DoubleNameEntity::class;
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, $validateClass, ['name', 'name2'], 'bar', 'findby', false);
-
-        $entity1 = new DoubleNameEntity(1, 'Foo', null);
-        $violationsList = $validator->validate($entity1);
-        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity before it is saved to the database.');
-
-        $em->persist($entity1);
-        $em->flush();
-
-        $violationsList = $validator->validate($entity1);
-        $this->assertEquals(0, $violationsList->count(), 'No violations found on entity after it was saved to the database.');
-
-        $entity2 = new DoubleNameEntity(2, 'Foo', null);
-
-        $violationsList = $validator->validate($entity2);
-        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
-
-        /* @var ConstraintViolationInterface $violation */
-        $violation = $violationsList[0];
-        $this->assertEquals('This value is already used.', $violation->getMessage());
-        $this->assertEquals('bar', $violation->getPropertyPath());
-        $this->assertEquals('Foo', $violation->getInvalidValue());
-    }
-
-    public function testValidateUniquenessAfterConsideringMultipleQueryResults()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em);
-
-        $entity1 = new SingleIntIdEntity(1, 'foo');
-        $entity2 = new SingleIntIdEntity(2, 'foo');
-
-        $em->persist($entity1);
-        $em->persist($entity2);
-        $em->flush();
-
-        $violationsList = $validator->validate($entity1);
-        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
-
-        $violationsList = $validator->validate($entity2);
-        $this->assertEquals(1, $violationsList->count(), 'Violation found on entity with conflicting entity existing in the database.');
-    }
-
-    public function testValidateUniquenessUsingCustomRepositoryMethod()
-    {
-        $entityManagerName = 'foo';
-        $repository = $this->createRepositoryMock();
-        $repository->expects($this->once())
-            ->method('findByCustom')
-            ->will($this->returnValue([]))
-        ;
-        $em = $this->createEntityManagerMock($repository);
-        $validator = $this->createValidator($entityManagerName, $em, null, [], null, 'findByCustom');
-
-        $entity1 = new SingleIntIdEntity(1, 'foo');
-
-        $violationsList = $validator->validate($entity1);
-        $this->assertEquals(0, $violationsList->count(), 'Violation is using custom repository method.');
-    }
-
-    public function testValidateUniquenessWithUnrewoundArray()
-    {
-        $entity = new SingleIntIdEntity(1, 'foo');
-
-        $entityManagerName = 'foo';
-        $repository = $this->createRepositoryMock();
-        $repository->expects($this->once())
-            ->method('findByCustom')
-            ->will(
-                $this->returnCallback(function () use ($entity) {
-                    $returnValue = [
-                            $entity,
-                        ];
-                    next($returnValue);
-
-                    return $returnValue;
-                })
-            )
-        ;
-        $em = $this->createEntityManagerMock($repository);
-        $validator = $this->createValidator($entityManagerName, $em, null, [], null, 'findByCustom');
-
-        $violationsList = $validator->validate($entity);
-        $this->assertCount(0, $violationsList, 'Violation is using unrewound array as return value in the repository method.');
-    }
-
-    public function testAssociatedEntity()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['single']);
-
-        $entity1 = new SingleIntIdEntity(1, 'foo');
-        $associated = new AssociationEntity();
-        $associated->single = $entity1;
-
-        $em->persist($entity1);
-        $em->persist($associated);
-        $em->flush();
-
-        $violationsList = $validator->validate($associated);
-        $this->assertEquals(0, $violationsList->count());
-
-        $associated2 = new AssociationEntity();
-        $associated2->single = $entity1;
-
-        $em->persist($associated2);
-        $em->flush();
-
-        $violationsList = $validator->validate($associated2);
-        $this->assertEquals(1, $violationsList->count());
-    }
-
-    public function testAssociatedEntityWithNull()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['single'], null, 'findBy', false);
-
-        $associated = new AssociationEntity();
-        $associated->single = null;
-
-        $em->persist($associated);
-        $em->flush();
-
-        $violationsList = $validator->validate($associated);
-        $this->assertEquals(0, $violationsList->count());
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     * @expectedExceptionMessage Associated entities are not allowed to have more than one identifier field
-     */
-    public function testAssociatedCompositeEntity()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, AssociationEntity::class, ['composite']);
-
-        $composite = new CompositeIntIdEntity(1, 1, 'test');
-        $associated = new AssociationEntity();
-        $associated->composite = $composite;
-
-        $em->persist($composite);
-        $em->persist($associated);
-        $em->flush();
-
-        $validator->validate($associated);
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     * @expectedExceptionMessage Object manager "foo" does not exist.
-     */
-    public function testDedicatedEntityManagerNullObject()
-    {
-        $uniqueFields = ['name'];
-        $entityManagerName = 'foo';
-
-        /* @var ManagerRegistry $registry */
-        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
-
-        $constraint = new UniqueEntity([
-            'fields' => $uniqueFields,
-            'em' => $entityManagerName,
+            $em->getClassMetadata(SingleIntIdEntity::class),
+            $em->getClassMetadata(DoubleNameEntity::class),
+            $em->getClassMetadata(CompositeIntIdEntity::class),
+            $em->getClassMetadata(AssociationEntity::class),
         ]);
-
-        $uniqueValidator = new UniqueEntityValidator($registry);
-
-        $entity = new SingleIntIdEntity(1, null);
-
-        $uniqueValidator->validate($entity, $constraint);
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     * @expectedExceptionMessage Unable to find the object manager associated with an entity of class "Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity"
-     */
-    public function testEntityManagerNullObject()
-    {
-        $uniqueFields = ['name'];
-
-        /* @var ManagerRegistry|MockObject $registry */
-        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
-
-        $registry->expects($this->once())
-            ->method('getManagers')
-            ->willReturn([]);
-
-        $constraint = new UniqueEntity([
-            'fields' => $uniqueFields,
-        ]);
-
-        $uniqueValidator = new UniqueEntityValidator($registry);
-
-        $entity = new SingleIntIdEntity(1, null);
-
-        $uniqueValidator->validate($entity, $constraint);
-    }
-
-    public function testDisableAllFilterAndReactivateAfter()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
-        $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
-        $em->getConfiguration()->addFilter('barFilter1', BarFilter::class);
-        $em->getFilters()->enable('fooFilter1');
-        $em->getFilters()->enable('fooFilter2');
-        $em->getFilters()->enable('barFilter1');
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em);
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-
-        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
-
-        $violationsList = $validator->validate($entity1);
-
-        $this->assertEquals(0, $violationsList->count());
-        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
-    }
-
-    public function testDisableOneFilterAndReactivateAfter()
-    {
-        $entityManagerName = 'foo';
-        $em = DoctrineTestHelper::createTestEntityManager();
-        $em->getConfiguration()->addFilter('fooFilter1', FooFilter::class);
-        $em->getConfiguration()->addFilter('fooFilter2', FooFilter::class);
-        $em->getConfiguration()->addFilter('barFilter1', BarFilter::class);
-        $em->getFilters()->enable('fooFilter1');
-        $em->getFilters()->enable('fooFilter2');
-        $em->getFilters()->enable('barFilter1');
-        $this->createSchema($em);
-        $validator = $this->createValidator($entityManagerName, $em, null, null, null, 'findBy', true, ['fooFilter1'], false);
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-
-        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
-
-        $violationsList = $validator->validate($entity1);
-
-        $this->assertEquals(0, $violationsList->count());
-        $this->assertCount(3, $em->getFilters()->getEnabledFilters());
     }
 }

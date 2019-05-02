@@ -25,8 +25,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Tests case for doctrine callback validator.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class DoctrineCallbackValidatorTest extends TestCase
+final class DoctrineCallbackValidatorTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -38,47 +40,38 @@ class DoctrineCallbackValidatorTest extends TestCase
      */
     protected $validator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $entityManagerName = 'foo';
         $em = DoctrineTestHelper::createTestEntityManager();
-        /* @var ManagerRegistry $registry */
+        /** @var ManagerRegistry $registry */
         $registry = $this->createRegistryMock($entityManagerName, $em);
         $context = $this->getMockBuilder(ExecutionContextInterface::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
         $this->context = $context;
         $this->validator = new DoctrineCallbackValidator($registry);
         /* @var ExecutionContextInterface $context */
         $this->validator->initialize($context);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->context = null;
         $this->validator = null;
     }
 
-    protected function createRegistryMock($entityManagerName, $em)
-    {
-        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
-        $registry->expects($this->any())
-            ->method('getManager')
-            ->with($this->equalTo($entityManagerName))
-            ->will($this->returnValue($em));
-
-        return $registry;
-    }
-
-    public function testNullIsValid()
+    public function testNullIsValid(): void
     {
         $this->context->expects($this->never())
-            ->method('addViolation');
+            ->method('addViolation')
+        ;
 
         $this->validator->validate(null, new DoctrineCallback('foo'));
     }
 
-    public function testSingleMethod()
+    public function testSingleMethod(): void
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback('validate');
@@ -86,13 +79,14 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('My message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate($object, $constraint);
     }
 
-    public function testSingleMethodExplicitName()
+    public function testSingleMethodExplicitName(): void
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback(['callback' => 'validate']);
@@ -100,13 +94,14 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('My message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate($object, $constraint);
     }
 
-    public function testSingleStaticMethod()
+    public function testSingleStaticMethod(): void
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback('validateStatic');
@@ -114,13 +109,14 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('Static message', [
-                    '{{ value }}' => 'baz',
-                ]);
+                '{{ value }}' => 'baz',
+            ])
+        ;
 
         $this->validator->validate($object, $constraint);
     }
 
-    public function testClosure()
+    public function testClosure(): void
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback(function ($object, ExecutionContextInterface $context) {
@@ -132,13 +128,14 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('My message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate($object, $constraint);
     }
 
-    public function testClosureNullObject()
+    public function testClosureNullObject(): void
     {
         $constraint = new DoctrineCallback(function ($object, ExecutionContextInterface $context) {
             $context->addViolation('My message', ['{{ value }}' => 'foobar']);
@@ -149,13 +146,14 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('My message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate(null, $constraint);
     }
 
-    public function testClosureExplicitName()
+    public function testClosureExplicitName(): void
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback([
@@ -169,13 +167,14 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('My message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate($object, $constraint);
     }
 
-    public function testArrayCallable()
+    public function testArrayCallable(): void
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback([FooCallbackValidatorClass::class, 'validateCallback']);
@@ -183,26 +182,28 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('Callback message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate($object, $constraint);
     }
 
-    public function testArrayCallableNullObject()
+    public function testArrayCallableNullObject(): void
     {
         $constraint = new DoctrineCallback([FooCallbackValidatorClass::class, 'validateCallback']);
 
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('Callback message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate(null, $constraint);
     }
 
-    public function testArrayCallableExplicitName()
+    public function testArrayCallableExplicitName(): void
     {
         $object = new FooCallbackValidatorObject();
         $constraint = new DoctrineCallback([
@@ -212,45 +213,43 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->context->expects($this->once())
             ->method('addViolation')
             ->with('Callback message', [
-                    '{{ value }}' => 'foobar',
-                ]);
+                '{{ value }}' => 'foobar',
+            ])
+        ;
 
         $this->validator->validate($object, $constraint);
     }
 
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException
-     */
-    public function testExpectValidConstraint()
+    public function testExpectValidConstraint(): void
     {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\UnexpectedTypeException::class);
+
         $object = new FooCallbackValidatorObject();
-        /* @var Constraint $constraint */
+        /** @var Constraint $constraint */
         $constraint = $this->getMockForAbstractClass(Constraint::class);
 
         $this->validator->validate($object, $constraint);
     }
 
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
-     */
-    public function testExpectValidMethods()
+    public function testExpectValidMethods(): void
     {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException::class);
+
         $object = new FooCallbackValidatorObject();
 
         $this->validator->validate($object, new DoctrineCallback('foobar'));
     }
 
-    /**
-     * @expectedException \Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException
-     */
-    public function testExpectValidCallbacks()
+    public function testExpectValidCallbacks(): void
     {
+        $this->expectException(\Fxp\Component\DoctrineExtensions\Exception\ConstraintDefinitionException::class);
+
         $object = new FooCallbackValidatorObject();
 
         $this->validator->validate($object, new DoctrineCallback(['foo', 'bar']));
     }
 
-    public function testConstraintGetTargets()
+    public function testConstraintGetTargets(): void
     {
         $constraint = new DoctrineCallback('foo');
         $targets = [Constraint::CLASS_CONSTRAINT, Constraint::PROPERTY_CONSTRAINT];
@@ -258,22 +257,34 @@ class DoctrineCallbackValidatorTest extends TestCase
         $this->assertEquals($targets, $constraint->getTargets());
     }
 
-    public function testNoConstructorArguments()
+    public function testNoConstructorArguments(): void
     {
         $this->assertInstanceOf(DoctrineCallback::class, new DoctrineCallback());
     }
 
-    public function testAnnotationInvocationSingleValued()
+    public function testAnnotationInvocationSingleValued(): void
     {
         $constraint = new DoctrineCallback(['value' => 'validateStatic']);
 
         $this->assertEquals(new DoctrineCallback('validateStatic'), $constraint);
     }
 
-    public function testAnnotationInvocationMultiValued()
+    public function testAnnotationInvocationMultiValued(): void
     {
         $constraint = new DoctrineCallback(['value' => [FooCallbackValidatorClass::class, 'validateCallback']]);
 
         $this->assertEquals(new DoctrineCallback([FooCallbackValidatorClass::class, 'validateCallback']), $constraint);
+    }
+
+    protected function createRegistryMock($entityManagerName, $em)
+    {
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
+        $registry->expects($this->any())
+            ->method('getManager')
+            ->with($this->equalTo($entityManagerName))
+            ->will($this->returnValue($em))
+        ;
+
+        return $registry;
     }
 }

@@ -23,40 +23,46 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * Tests case for abstract sql filter event subscriber.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class AbstractFilterSubscriberTest extends TestCase
+final class AbstractFilterSubscriberTest extends TestCase
 {
-    public function testInjectParameters()
+    public function testInjectParameters(): void
     {
-        /* @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */
+        /** @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */
         $em = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
-        /* @var GetResponseEvent|\PHPUnit_Framework_MockObject_MockObject $event */
+        /** @var GetResponseEvent|\PHPUnit_Framework_MockObject_MockObject $event */
         $event = $this->getMockBuilder(GetResponseEvent::class)->disableOriginalConstructor()->getMock();
-        /* @var SQLFilter|\PHPUnit_Framework_MockObject_MockObject $filter */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|SQLFilter $filter */
         $filter = $this->getMockBuilder(SQLFilter::class)->disableOriginalConstructor()->getMock();
-        /* @var FilterCollection|\PHPUnit_Framework_MockObject_MockObject $filterCollection */
+        /** @var FilterCollection|\PHPUnit_Framework_MockObject_MockObject $filterCollection */
         $filterCollection = $this->getMockBuilder(FilterCollection::class)->disableOriginalConstructor()->getMock();
 
         $em->expects($this->once())
             ->method('getFilters')
-            ->willReturn($filterCollection);
+            ->willReturn($filterCollection)
+        ;
 
         $filterCollection->expects($this->once())
             ->method('getEnabledFilters')
             ->willReturn([
                 'foo' => $filter,
-            ]);
+            ])
+        ;
 
-        /* @var AbstractFilterSubscriber|\PHPUnit_Framework_MockObject_MockObject $listener */
+        /** @var AbstractFilterSubscriber|\PHPUnit_Framework_MockObject_MockObject $listener */
         $listener = $this->getMockForAbstractClass(AbstractFilterSubscriber::class, [$em]);
 
         $listener->expects($this->once())
             ->method('supports')
-            ->willReturn(SQLFilter::class);
+            ->willReturn(SQLFilter::class)
+        ;
 
         $listener->expects($this->once())
             ->method('injectParameters')
-            ->with($filter);
+            ->with($filter)
+        ;
 
         $this->assertEquals([
             KernelEvents::REQUEST => [

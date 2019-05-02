@@ -29,22 +29,22 @@ class OrderByWalker extends TreeWalkerAdapter
     /**
      * Sort key alias hint name.
      */
-    const HINT_SORT_ALIAS = 'fxp_paginator.sort.alias';
+    public const HINT_SORT_ALIAS = 'fxp_paginator.sort.alias';
 
     /**
      * Sort key field hint name.
      */
-    const HINT_SORT_FIELD = 'fxp_paginator.sort.field';
+    public const HINT_SORT_FIELD = 'fxp_paginator.sort.field';
 
     /**
      * Sort direction hint name.
      */
-    const HINT_SORT_DIRECTION = 'fxp_paginator.sort.direction';
+    public const HINT_SORT_DIRECTION = 'fxp_paginator.sort.direction';
 
     /**
      * {@inheritdoc}
      */
-    public function walkSelectStatement(SelectStatement $AST)
+    public function walkSelectStatement(SelectStatement $AST): void
     {
         $query = $this->_getQuery();
 
@@ -79,11 +79,11 @@ class OrderByWalker extends TreeWalkerAdapter
                     throw new \UnexpectedValueException("There is no component aliased by [{$alias}] in the given Query");
                 }
 
-                /* @var ClassMetadata $meta */
+                /** @var ClassMetadata $meta */
                 $meta = $components[$alias]['metadata'];
 
                 if (!$meta->hasField($field)) {
-                    throw new \UnexpectedValueException("There is no such field [{$field}] in the given Query component, aliased by [$alias]");
+                    throw new \UnexpectedValueException("There is no such field [{$field}] in the given Query component, aliased by [${alias}]");
                 }
             } else {
                 if (!\array_key_exists($field, $components)) {

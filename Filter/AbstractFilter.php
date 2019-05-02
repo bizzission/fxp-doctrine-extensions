@@ -23,7 +23,7 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
 abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
 {
     /**
-     * @var EntityManagerInterface|null
+     * @var null|EntityManagerInterface
      */
     private $entityManager;
 
@@ -33,7 +33,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
     private $enable = true;
 
     /**
-     * @var \ReflectionProperty|null
+     * @var null|\ReflectionProperty
      */
     private $refParameters;
 
@@ -134,9 +134,9 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
      *
      * @param string $name The name of the parameter
      *
-     * @return string|string[]|bool|bool[]|int|int[]|float|float[]|null
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return null|bool|bool[]|float|float[]|int|int[]|string|string[]
      */
     protected function getRealParameter($name)
     {

@@ -46,7 +46,7 @@ class DoctrineCallbackValidator extends ConstraintValidator
      * @throws ConstraintDefinitionException When the targeted by Callback constraint is not a valid callable
      * @throws ConstraintDefinitionException When the targeted by Callback constraint does not exist
      */
-    public function validate($object, Constraint $constraint)
+    public function validate($object, Constraint $constraint): void
     {
         if (!$constraint instanceof DoctrineCallback) {
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\DoctrineCallback');
@@ -63,9 +63,9 @@ class DoctrineCallbackValidator extends ConstraintValidator
      * @param mixed            $object
      * @param DoctrineCallback $constraint
      *
-     * @return bool
-     *
      * @throws ConstraintDefinitionException
+     *
+     * @return bool
      */
     private function doValidateCallback($object, DoctrineCallback $constraint)
     {
@@ -90,7 +90,7 @@ class DoctrineCallbackValidator extends ConstraintValidator
      *
      * @throws ConstraintDefinitionException
      */
-    private function callObjectMethod($object, DoctrineCallback $constraint)
+    private function callObjectMethod($object, DoctrineCallback $constraint): void
     {
         $callback = (string) $constraint->callback;
 

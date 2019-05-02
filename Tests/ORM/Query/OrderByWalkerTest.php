@@ -14,33 +14,36 @@ namespace Fxp\Component\DoctrineExtensions\Tests\ORM\Query;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Fxp\Component\DoctrineExtensions\ORM\Query\OrderByWalker;
-use Fxp\Component\DoctrineExtensions\Tests\OrmTestCase;
+use Fxp\Component\DoctrineExtensions\Tests\AbstractOrmTestCase;
 
 /**
  * Tests case for order by walker.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class OrderByWalkerTest extends OrmTestCase
+final class OrderByWalkerTest extends AbstractOrmTestCase
 {
     /**
      * @var EntityManagerInterface
      */
     private $em;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->em = $this->_getTestEntityManager();
     }
 
-    public function testOrderSingleField()
+    public function testOrderSingleField(): void
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
-            ->useQueryCache(false);
+            ->useQueryCache(false)
+        ;
 
         $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['u']);
         $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);
@@ -50,14 +53,15 @@ class OrderByWalkerTest extends OrmTestCase
         $this->assertSame($expected, $query->getSQL());
     }
 
-    public function testOrderMultipleFields()
+    public function testOrderMultipleFields(): void
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
-            ->useQueryCache(false);
+            ->useQueryCache(false)
+        ;
 
         $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['u', 'u']);
         $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username', 'id']);
@@ -67,31 +71,32 @@ class OrderByWalkerTest extends OrmTestCase
         $this->assertSame($expected, $query->getSQL());
     }
 
-    public function testOrderWithoutField()
+    public function testOrderWithoutField(): void
     {
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
-            ->useQueryCache(false);
+            ->useQueryCache(false)
+        ;
 
         $expected = 'SELECT u0_.id AS id_0, u0_.username AS username_1 FROM users u0_';
         $this->assertSame($expected, $query->getSQL());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The HINT_SORT_ALIAS and HINT_SORT_DIRECTION must be an array
-     */
-    public function testOrderWithInvalidAliases()
+    public function testOrderWithInvalidAliases(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The HINT_SORT_ALIAS and HINT_SORT_DIRECTION must be an array');
+
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
-            ->useQueryCache(false);
+            ->useQueryCache(false)
+        ;
 
         $query->setHint(OrderByWalker::HINT_SORT_ALIAS, 'u');
         $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);
@@ -100,18 +105,18 @@ class OrderByWalkerTest extends OrmTestCase
         $query->getSQL();
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage There is no component aliased by [a] in the given Query
-     */
-    public function testOrderWithInvalidAliasComponent()
+    public function testOrderWithInvalidAliasComponent(): void
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('There is no component aliased by [a] in the given Query');
+
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
-            ->useQueryCache(false);
+            ->useQueryCache(false)
+        ;
 
         $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['a']);
         $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);
@@ -120,18 +125,18 @@ class OrderByWalkerTest extends OrmTestCase
         $query->getSQL();
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage There is no such field [foo] in the given Query component, aliased by [u]
-     */
-    public function testOrderWithInvalidField()
+    public function testOrderWithInvalidField(): void
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('There is no such field [foo] in the given Query component, aliased by [u]');
+
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
-            ->useQueryCache(false);
+            ->useQueryCache(false)
+        ;
 
         $query->setHint(OrderByWalker::HINT_SORT_ALIAS, ['u']);
         $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['foo']);
@@ -140,18 +145,18 @@ class OrderByWalkerTest extends OrmTestCase
         $query->getSQL();
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage There is no component field [username] in the given Query
-     */
-    public function testOrderWithoutAliasAndComponent()
+    public function testOrderWithoutAliasAndComponent(): void
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('There is no component field [username] in the given Query');
+
         $dqlToBeTested = 'SELECT u FROM Fxp\Component\DoctrineExtensions\Tests\Models\UserMock u';
         $treeWalkers = [OrderByWalker::class];
 
         $query = $this->em->createQuery($dqlToBeTested);
         $query->setHint(Query::HINT_CUSTOM_TREE_WALKERS, $treeWalkers)
-            ->useQueryCache(false);
+            ->useQueryCache(false)
+        ;
 
         $query->setHint(OrderByWalker::HINT_SORT_ALIAS, [false]);
         $query->setHint(OrderByWalker::HINT_SORT_FIELD, ['username']);

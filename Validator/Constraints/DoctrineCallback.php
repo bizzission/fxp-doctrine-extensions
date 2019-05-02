@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraint;
 class DoctrineCallback extends Constraint
 {
     /**
-     * @var string|callable
+     * @var callable|string
      */
     public $callback;
 

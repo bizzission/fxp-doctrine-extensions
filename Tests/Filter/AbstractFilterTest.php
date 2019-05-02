@@ -23,8 +23,10 @@ use PHPUnit\Framework\TestCase;
  * Tests case for abstract sql filter.
  *
  * @author François Pluchino <francois.pluchino@gmail.com>
+ *
+ * @internal
  */
-class AbstractFilterTest extends TestCase
+final class AbstractFilterTest extends TestCase
 {
     public function getParameters()
     {
@@ -38,35 +40,39 @@ class AbstractFilterTest extends TestCase
     /**
      * @dataProvider getParameters
      *
-     * @param bool|null $value    The value of foo_boolean parameter
+     * @param null|bool $value    The value of foo_boolean parameter
      * @param string    $expected The expected result
      */
-    public function testGetRealParameter($value, $expected)
+    public function testGetRealParameter($value, $expected): void
     {
-        /* @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */
+        /** @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */
         $em = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
-        /* @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
+        /** @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
         $meta = $this->getMockBuilder(ClassMetadata::class)->disableOriginalConstructor()->getMock();
-        /* @var Connection|\PHPUnit_Framework_MockObject_MockObject $connection */
+        /** @var Connection|\PHPUnit_Framework_MockObject_MockObject $connection */
         $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
 
         $meta->expects($this->any())
             ->method('getName')
-            ->willReturn(\stdClass::class);
+            ->willReturn(\stdClass::class)
+        ;
 
         $meta->expects($this->any())
             ->method('getColumnName')
             ->willReturnCallback(function ($v) {
                 return $v;
-            });
+            })
+        ;
 
         $em->expects($this->any())
             ->method('getFilters')
-            ->willReturn(new FilterCollection($em));
+            ->willReturn(new FilterCollection($em))
+        ;
 
         $em->expects($this->any())
             ->method('getConnection')
-            ->willReturn($connection);
+            ->willReturn($connection)
+        ;
 
         $em->expects($this->any())
             ->method('getClassMetadata')
@@ -74,13 +80,15 @@ class AbstractFilterTest extends TestCase
                 return $v === $meta->getName()
                     ? $meta
                     : null;
-            });
+            })
+        ;
 
         $connection->expects($this->any())
             ->method('quote')
             ->willReturnCallback(function ($v) {
                 return '"'.$v.'"';
-            });
+            })
+        ;
 
         $filter = new BarFilter($em);
         $this->assertInstanceOf(AbstractFilter::class, $filter);

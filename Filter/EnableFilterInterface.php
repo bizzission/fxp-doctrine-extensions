@@ -21,14 +21,14 @@ interface EnableFilterInterface
     /**
      * Enable the filter.
      *
-     * @return self
+     * @return EnableFilterInterface
      */
     public function enable();
 
     /**
      * Disable the filter.
      *
-     * @return self
+     * @return EnableFilterInterface
      */
     public function disable();
 

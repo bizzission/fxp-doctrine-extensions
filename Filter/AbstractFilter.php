@@ -40,7 +40,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
     /**
      * {@inheritdoc}
      */
-    public function enable()
+    public function enable(): EnableFilterInterface
     {
         $this->enable = true;
 
@@ -50,7 +50,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
     /**
      * {@inheritdoc}
      */
-    public function disable()
+    public function disable(): EnableFilterInterface
     {
         $this->enable = false;
 
@@ -60,7 +60,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
     /**
      * {@inheritdoc}
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->enable;
     }
@@ -68,7 +68,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
     /**
      * {@inheritdoc}
      */
-    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
+    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         if ($this->isEnabled() && $this->supports($targetEntity)) {
             return $this->doAddFilterConstraint($targetEntity, $targetTableAlias);
@@ -87,7 +87,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
      *
      * @return string
      */
-    abstract protected function doAddFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias);
+    abstract protected function doAddFilterConstraint(ClassMetadata $targetEntity, string $targetTableAlias): string;
 
     /**
      * Check if the target entity is supported by the sql filter.
@@ -96,7 +96,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
      *
      * @return bool
      */
-    protected function supports(ClassMetadata $targetEntity)
+    protected function supports(ClassMetadata $targetEntity): bool
     {
         return true;
     }
@@ -104,9 +104,11 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
     /**
      * Get the entity manager.
      *
+     * @throws
+     *
      * @return EntityManagerInterface
      */
-    protected function getEntityManager()
+    protected function getEntityManager(): EntityManagerInterface
     {
         if (null === $this->entityManager) {
             $ref = new \ReflectionProperty(SQLFilter::class, 'em');
@@ -124,7 +126,7 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
      *
      * @return ClassMetadata
      */
-    protected function getClassMetadata($classname)
+    protected function getClassMetadata(string $classname): ClassMetadata
     {
         return $this->getEntityManager()->getClassMetadata($classname);
     }
@@ -135,10 +137,11 @@ abstract class AbstractFilter extends SQLFilter implements EnableFilterInterface
      * @param string $name The name of the parameter
      *
      * @throws \InvalidArgumentException
+     * @throws \Exception
      *
      * @return null|bool|bool[]|float|float[]|int|int[]|string|string[]
      */
-    protected function getRealParameter($name)
+    protected function getRealParameter(string $name)
     {
         $this->getParameter($name);
 

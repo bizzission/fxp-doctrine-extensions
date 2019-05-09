@@ -24,14 +24,18 @@ class BarFilter extends AbstractFilter
     /**
      * {@inheritdoc}
      */
-    protected function doAddFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
+    protected function doAddFilterConstraint(ClassMetadata $targetEntity, string $targetTableAlias): string
     {
         $filter = '';
 
-        if ($this->hasParameter('foo_boolean') && $this->getRealParameter('foo_boolean')) {
-            $connection = $this->getEntityManager()->getConnection();
-            $col = $this->getClassMetadata($targetEntity->getName())->getColumnName('foo');
-            $filter .= $targetTableAlias.'.'.$col.' = '.$connection->quote('bar');
+        try {
+            if ($this->hasParameter('foo_boolean') && $this->getRealParameter('foo_boolean')) {
+                $connection = $this->getEntityManager()->getConnection();
+                $col = $this->getClassMetadata($targetEntity->getName())->getColumnName('foo');
+                $filter .= $targetTableAlias.'.'.$col.' = '.$connection->quote('bar');
+            }
+        } catch (\Exception $e) {
+            // nothing do
         }
 
         return $filter;

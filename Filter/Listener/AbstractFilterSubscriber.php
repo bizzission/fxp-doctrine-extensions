@@ -48,7 +48,7 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [
@@ -76,7 +76,7 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
      *
      * @return null|SQLFilter
      */
-    protected function getFilter()
+    protected function getFilter(): ?SQLFilter
     {
         $supports = $this->supports();
         $filters = $this->entityManager->getFilters()->getEnabledFilters();
@@ -98,7 +98,7 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
      *
      * @return string
      */
-    abstract protected function supports();
+    abstract protected function supports(): string;
 
     /**
      * Inject the parameters in doctrine sql filter.

@@ -66,7 +66,7 @@ class UniqueEntityValidator extends ConstraintValidator
         $result = $this->getResult($entity, $constraint, $criteria, $em);
 
         if (!$this->isValidResult($result, $entity)) {
-            $errorPath = null !== $constraint->errorPath ? $constraint->errorPath : $fields[0];
+            $errorPath = $constraint->errorPath ?? $fields[0];
             $invalidValue = $criteria[$errorPath] ?? $criteria[$fields[0]];
 
             $this->context->buildViolation($constraint->message)
@@ -88,7 +88,7 @@ class UniqueEntityValidator extends ConstraintValidator
      *
      * @return null|array Null if there is no constraint
      */
-    protected function getCriteria($entity, Constraint $constraint, ObjectManager $em)
+    protected function getCriteria($entity, Constraint $constraint, ObjectManager $em): ?array
     {
         /** @var UniqueEntity $constraint */
         /** @var \Doctrine\ORM\Mapping\ClassMetadata $class */
@@ -117,7 +117,7 @@ class UniqueEntityValidator extends ConstraintValidator
      *
      * @return array
      */
-    private function getResult($entity, Constraint $constraint, array $criteria, ObjectManager $em)
+    private function getResult($entity, Constraint $constraint, array $criteria, ObjectManager $em): array
     {
         /** @var UniqueEntity $constraint */
         $filters = SqlFilterUtil::findFilters($em, (array) $constraint->filters, $constraint->allFilters);
@@ -146,7 +146,7 @@ class UniqueEntityValidator extends ConstraintValidator
      *
      * @return bool
      */
-    private function isValidResult($result, $entity)
+    private function isValidResult($result, $entity): bool
     {
         return 0 === \count($result)
             || (1 === \count($result)
@@ -165,7 +165,7 @@ class UniqueEntityValidator extends ConstraintValidator
      *
      * @return null|array The new criteria
      */
-    private function findFieldCriteria(array $criteria, Constraint $constraint, ObjectManager $em, ClassMetadata $class, $entity, $fieldName)
+    private function findFieldCriteria(array $criteria, Constraint $constraint, ObjectManager $em, ClassMetadata $class, $entity, string $fieldName): ?array
     {
         $this->validateFieldCriteria($class, $fieldName);
 
@@ -188,7 +188,7 @@ class UniqueEntityValidator extends ConstraintValidator
      *
      * @throws ConstraintDefinitionException
      */
-    private function validateFieldCriteria(ClassMetadata $class, $fieldName): void
+    private function validateFieldCriteria(ClassMetadata $class, string $fieldName): void
     {
         if (!$class->hasField($fieldName) && !$class->hasAssociation($fieldName)) {
             throw new ConstraintDefinitionException(sprintf("The field '%s' is not mapped by Doctrine, so it cannot be validated for uniqueness.", $fieldName));
@@ -205,7 +205,7 @@ class UniqueEntityValidator extends ConstraintValidator
      *
      * @throws ConstraintDefinitionException
      */
-    private function findFieldCriteriaStep2(array &$criteria, ObjectManager $em, ClassMetadata $class, $fieldName): void
+    private function findFieldCriteriaStep2(array &$criteria, ObjectManager $em, ClassMetadata $class, string $fieldName): void
     {
         if (null !== $criteria[$fieldName] && $class->hasAssociation($fieldName)) {
             /* Ensure the Proxy is initialized before using reflection to

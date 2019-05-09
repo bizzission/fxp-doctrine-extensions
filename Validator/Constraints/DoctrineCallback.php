@@ -42,7 +42,7 @@ class DoctrineCallback extends Constraint
     /**
      * {@inheritdoc}
      */
-    public function getDefaultOption()
+    public function getDefaultOption(): ?string
     {
         return 'callback';
     }
@@ -59,31 +59,23 @@ class DoctrineCallback extends Constraint
      * Invocation through annotations with an array parameter only.
      *
      * @param array $options
-     *
-     * @return array
      */
-    protected function initArraySingleOption(array $options)
+    protected function initArraySingleOption(array &$options): void
     {
         if (1 === \count($options) && isset($options['value'])) {
             $options = $options['value'];
         }
-
-        return $options;
     }
 
     /**
      * Init callback options.
      *
-     * @param array $options
-     *
-     * @return array
+     * @param array|callable $options
      */
-    protected function initArrayCallbackOption($options)
+    protected function initArrayCallbackOption(&$options): void
     {
         if (!isset($options['callback']) && !isset($options['groups']) && \is_callable($options)) {
             $options = ['callback' => $options];
         }
-
-        return $options;
     }
 }

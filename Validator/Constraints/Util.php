@@ -35,7 +35,7 @@ class Util
      *
      * @return int|string
      */
-    public static function getFormattedIdentifier(ClassMetadata $relatedClass, array $criteria, $fieldName, $value)
+    public static function getFormattedIdentifier(ClassMetadata $relatedClass, array $criteria, string $fieldName, $value)
     {
         $isObject = \is_object($criteria[$fieldName]);
 
@@ -81,7 +81,7 @@ class Util
      *
      * @return ObjectManager
      */
-    public static function getObjectManager(ManagerRegistry $registry, $entity, Constraint $constraint)
+    public static function getObjectManager(ManagerRegistry $registry, $entity, Constraint $constraint): ObjectManager
     {
         self::validateConstraint($constraint);
         /* @var UniqueEntity $constraint */
@@ -123,7 +123,7 @@ class Util
      *
      * @return ObjectManager
      */
-    private static function findObjectManager(ManagerRegistry $registry, $entity, UniqueEntity $constraint)
+    private static function findObjectManager(ManagerRegistry $registry, $entity, UniqueEntity $constraint): ObjectManager
     {
         if ($constraint->em) {
             $em = $registry->getManager($constraint->em);

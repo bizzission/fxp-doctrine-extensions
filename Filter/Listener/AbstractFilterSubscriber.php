@@ -13,9 +13,9 @@ namespace Fxp\Component\DoctrineExtensions\Filter\Listener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -60,11 +60,11 @@ abstract class AbstractFilterSubscriber implements EventSubscriberInterface
     /**
      * Action on the event.
      *
-     * @param Event $event The event
+     * @param KernelEvent $event The event
      */
-    public function onEvent(Event $event): void
+    public function onEvent(KernelEvent $event): void
     {
-        if (!$event instanceof GetResponseEvent || !$this->injected) {
+        if (!$event instanceof RequestEvent || !$this->injected) {
             if (null !== ($filter = $this->getFilter())) {
                 $this->injectParameters($filter);
             }

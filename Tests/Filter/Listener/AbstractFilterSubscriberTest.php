@@ -16,7 +16,7 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Query\FilterCollection;
 use Fxp\Component\DoctrineExtensions\Filter\Listener\AbstractFilterSubscriber;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -28,12 +28,15 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class AbstractFilterSubscriberTest extends TestCase
 {
+    /**
+     * @throws
+     */
     public function testInjectParameters(): void
     {
         /** @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */
         $em = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
-        /** @var GetResponseEvent|\PHPUnit_Framework_MockObject_MockObject $event */
-        $event = $this->getMockBuilder(GetResponseEvent::class)->disableOriginalConstructor()->getMock();
+        /** @var \PHPUnit_Framework_MockObject_MockObject|RequestEvent $event */
+        $event = $this->getMockBuilder(RequestEvent::class)->disableOriginalConstructor()->getMock();
         /** @var \PHPUnit_Framework_MockObject_MockObject|SQLFilter $filter */
         $filter = $this->getMockBuilder(SQLFilter::class)->disableOriginalConstructor()->getMock();
         /** @var FilterCollection|\PHPUnit_Framework_MockObject_MockObject $filterCollection */
@@ -68,7 +71,7 @@ final class AbstractFilterSubscriberTest extends TestCase
             KernelEvents::REQUEST => [
                 ['onEvent', 7],
             ],
-        ], $listener->getSubscribedEvents());
+        ], $listener::getSubscribedEvents());
 
         $listener->onEvent($event);
     }

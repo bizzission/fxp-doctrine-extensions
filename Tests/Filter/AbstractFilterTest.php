@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\FilterCollection;
 use Fxp\Component\DoctrineExtensions\Filter\AbstractFilter;
 use Fxp\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -45,11 +46,11 @@ final class AbstractFilterTest extends TestCase
      */
     public function testGetRealParameter($value, $expected): void
     {
-        /** @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */
+        /** @var EntityManagerInterface|MockObject $em */
         $em = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
-        /** @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
+        /** @var ClassMetadata|MockObject $meta */
         $meta = $this->getMockBuilder(ClassMetadata::class)->disableOriginalConstructor()->getMock();
-        /** @var Connection|\PHPUnit_Framework_MockObject_MockObject $connection */
+        /** @var Connection|MockObject $connection */
         $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
 
         $meta->expects($this->any())

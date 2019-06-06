@@ -16,6 +16,7 @@ use Fxp\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorClass;
 use Fxp\Component\DoctrineExtensions\Tests\Fixtures\FooCallbackValidatorObject;
 use Fxp\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallback;
 use Fxp\Component\DoctrineExtensions\Validator\Constraints\DoctrineCallbackValidator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
 use Symfony\Component\Validator\Constraint;
@@ -31,7 +32,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 final class DoctrineCallbackValidatorTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     protected $context;
 

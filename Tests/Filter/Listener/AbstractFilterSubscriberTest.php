@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Query\FilterCollection;
 use Fxp\Component\DoctrineExtensions\Filter\Listener\AbstractFilterSubscriber;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -33,13 +34,13 @@ final class AbstractFilterSubscriberTest extends TestCase
      */
     public function testInjectParameters(): void
     {
-        /** @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $em */
+        /** @var EntityManagerInterface|MockObject $em */
         $em = $this->getMockBuilder(EntityManagerInterface::class)->getMock();
-        /** @var \PHPUnit_Framework_MockObject_MockObject|RequestEvent $event */
+        /** @var MockObject|RequestEvent $event */
         $event = $this->getMockBuilder(RequestEvent::class)->disableOriginalConstructor()->getMock();
-        /** @var \PHPUnit_Framework_MockObject_MockObject|SQLFilter $filter */
+        /** @var MockObject|SQLFilter $filter */
         $filter = $this->getMockBuilder(SQLFilter::class)->disableOriginalConstructor()->getMock();
-        /** @var FilterCollection|\PHPUnit_Framework_MockObject_MockObject $filterCollection */
+        /** @var FilterCollection|MockObject $filterCollection */
         $filterCollection = $this->getMockBuilder(FilterCollection::class)->disableOriginalConstructor()->getMock();
 
         $em->expects($this->once())
@@ -54,7 +55,7 @@ final class AbstractFilterSubscriberTest extends TestCase
             ])
         ;
 
-        /** @var AbstractFilterSubscriber|\PHPUnit_Framework_MockObject_MockObject $listener */
+        /** @var AbstractFilterSubscriber|MockObject $listener */
         $listener = $this->getMockForAbstractClass(AbstractFilterSubscriber::class, [$em]);
 
         $listener->expects($this->once())

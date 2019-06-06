@@ -13,6 +13,7 @@ namespace Fxp\Component\DoctrineExtensions\Tests\Validator\Constraints;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Fxp\Component\DoctrineExtensions\Validator\Constraints\Util;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -45,7 +46,7 @@ final class UtilTest extends TestCase
      */
     public function testFormatEmptyIdentifier($identifierType, $expected): void
     {
-        /** @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
+        /** @var ClassMetadata|MockObject $meta */
         $meta = $this->getMockBuilder(ClassMetadata::class)->getMock();
         $meta->expects($this->any())
             ->method('getIdentifier')
@@ -75,7 +76,7 @@ final class UtilTest extends TestCase
             $fieldName => new \stdClass(),
         ];
 
-        /** @var ClassMetadata|\PHPUnit_Framework_MockObject_MockObject $meta */
+        /** @var ClassMetadata|MockObject $meta */
         $meta = $this->getMockBuilder(ClassMetadata::class)->getMock();
         $meta->expects($this->any())
             ->method('getIdentifier')

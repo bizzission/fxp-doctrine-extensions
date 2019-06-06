@@ -16,6 +16,7 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Query\FilterCollection;
 use Fxp\Component\DoctrineExtensions\Tests\Fixtures\BarFilter;
 use Fxp\Component\DoctrineExtensions\Util\SqlFilterUtil;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,12 +29,12 @@ use PHPUnit\Framework\TestCase;
 final class SqlFilterUtilTest extends TestCase
 {
     /**
-     * @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityManagerInterface|MockObject
      */
     protected $em;
 
     /**
-     * @var FilterCollection|\PHPUnit_Framework_MockObject_MockObject
+     * @var FilterCollection|MockObject
      */
     protected $filterCollection;
 
@@ -50,7 +51,7 @@ final class SqlFilterUtilTest extends TestCase
 
     public function testGetEnabledFilters(): void
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject|SQLFilter $filter */
+        /** @var MockObject|SQLFilter $filter */
         $filter = $this->getMockForAbstractClass(SQLFilter::class, [$this->em]);
         $barFilter = new BarFilter($this->em);
         $barFilter->disable();

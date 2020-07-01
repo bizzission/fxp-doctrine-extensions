@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f50eafee38458179afdc3ef19f6fec41",
+    "content-hash": "42c1179de255749d012e7e1c586f9977",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1048,16 +1048,16 @@
         },
         {
             "name": "fxp/doctrine-extra",
-            "version": "dev-master",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fxpio/fxp-doctrine-extra.git",
-                "reference": "d0be35318a9f59e7281e7bd645991128fb3b732a"
+                "url": "https://github.com/bizzission/fxp-doctrine-extra.git",
+                "reference": "9c672acde7892717958efff0ee3bad723be4a70f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fxpio/fxp-doctrine-extra/zipball/d0be35318a9f59e7281e7bd645991128fb3b732a",
-                "reference": "d0be35318a9f59e7281e7bd645991128fb3b732a",
+                "url": "https://api.github.com/repos/bizzission/fxp-doctrine-extra/zipball/9c672acde7892717958efff0ee3bad723be4a70f",
+                "reference": "9c672acde7892717958efff0ee3bad723be4a70f",
                 "shasum": ""
             },
             "require": {
@@ -1070,7 +1070,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -1081,7 +1081,6 @@
                     "/Tests/"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1099,7 +1098,10 @@
                 "doctrine",
                 "utils"
             ],
-            "time": "2019-05-09T12:59:39+00:00"
+            "support": {
+                "source": "https://github.com/bizzission/fxp-doctrine-extra/tree/v1.1.0"
+            },
+            "time": "2019-04-30T20:39:38+00:00"
         },
         {
             "name": "ocramius/package-versions",

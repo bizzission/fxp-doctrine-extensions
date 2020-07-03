@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "42c1179de255749d012e7e1c586f9977",
+    "content-hash": "bbc9218e625a45afc4cee4528126492c",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1048,29 +1048,29 @@
         },
         {
             "name": "fxp/doctrine-extra",
-            "version": "v1.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bizzission/fxp-doctrine-extra.git",
-                "reference": "9c672acde7892717958efff0ee3bad723be4a70f"
+                "reference": "2f8a5cc2967c664290ae87e7d54109cecf2840af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bizzission/fxp-doctrine-extra/zipball/9c672acde7892717958efff0ee3bad723be4a70f",
-                "reference": "9c672acde7892717958efff0ee3bad723be4a70f",
+                "url": "https://api.github.com/repos/bizzission/fxp-doctrine-extra/zipball/2f8a5cc2967c664290ae87e7d54109cecf2840af",
+                "reference": "2f8a5cc2967c664290ae87e7d54109cecf2840af",
                 "shasum": ""
             },
             "require": {
-                "doctrine/persistence": "^1.0.0",
+                "doctrine/persistence": "^1.3",
                 "php": "^7.1.0"
             },
             "require-dev": {
-                "doctrine/orm": "^2.6.0"
+                "doctrine/orm": "^2.7"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -1099,9 +1099,9 @@
                 "utils"
             ],
             "support": {
-                "source": "https://github.com/bizzission/fxp-doctrine-extra/tree/v1.1.0"
+                "source": "https://github.com/bizzission/fxp-doctrine-extra/tree/master"
             },
-            "time": "2019-04-30T20:39:38+00:00"
+            "time": "2020-07-01T12:36:29+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -2979,9 +2979,18 @@
             "time": "2020-05-30T20:35:19+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "2.0",
+            "alias_normalized": "2.0.0.0",
+            "version": "9999999-dev",
+            "package": "fxp/doctrine-extra"
+        }
+    ],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "fxp/doctrine-extra": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
